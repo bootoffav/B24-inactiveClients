@@ -3,9 +3,11 @@ import { Form } from "./components/Form";
 
 function App() {
   return (
-    <div className="container mt-2">
-      <Form />
-    </div>
+    <section className="header-nav">
+      <div className="container mt-2">
+        <Form />
+      </div>
+    </section>
   );
 }
 

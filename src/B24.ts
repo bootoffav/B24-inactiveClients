@@ -1,5 +1,5 @@
 import { stringify } from "qs";
-type DepartmentId = "8640" | "8496";
+type departId = "8640" | "8496";
 
 interface User {
   ID: string;
@@ -12,7 +12,7 @@ const B24Config = {
   hook: process.env.REACT_APP_B24_HOOK || "",
 };
 
-async function getEmployees(depart: DepartmentId): Promise<any> {
+async function getEmployees(depart: departId): Promise<any> {
   const users: User[] = await fetch(
     B24Config.hostname + B24Config.hook + "user.get",
     {
@@ -40,4 +40,4 @@ async function getEmployees(depart: DepartmentId): Promise<any> {
 }
 
 export { getEmployees };
-export type { User };
+export type { User, departId };
