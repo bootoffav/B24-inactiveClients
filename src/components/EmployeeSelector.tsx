@@ -1,7 +1,7 @@
 import Select from "react-select";
 import { getEmployees } from "../B24";
 import { useState, useEffect } from "react";
-import type { departId } from "../B24";
+import type { departId } from "../types";
 
 function EmployeeSelector({ departId }: { departId?: departId }) {
   const [employees, setEmployees] = useState<[]>([]);

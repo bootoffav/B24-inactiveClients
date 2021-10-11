@@ -1,7 +1,7 @@
 import Select from "react-select";
 import { useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
-import { departId } from "../B24";
+import { departId } from "../types";
 
 function Form() {
   const departments = [
@@ -25,7 +25,7 @@ function Form() {
           <Select
             autoFocus
             options={departments}
-            onChange={({ value: departId }: any) => setDepartId(departId)}
+            onChange={(e) => e && setDepartId(e.value as departId)}
           />
         </label>
       </div>
