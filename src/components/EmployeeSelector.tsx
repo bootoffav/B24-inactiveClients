@@ -3,9 +3,28 @@ import { getEmployees } from "../B24";
 import { useState, useEffect } from "react";
 import type { departId } from "../types";
 
-function EmployeeSelector({ departId }: { departId?: departId }) {
+type EmployeeSelectorProps = {
+  departId?: departId;
+  changeEmployeeId: any;
+};
+
+function EmployeeSelector({
+  departId,
+  changeEmployeeId,
+}: EmployeeSelectorProps) {
   const [employees, setEmployees] = useState<[]>([]);
+  const [selectedEmployee, setSelectedEmployee] = useState<{
+    value: "";
+    label: "";
+  } | null>();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setSelectedEmployee(null);
+    changeEmployeeId();
+    // eslint-disable-next-line
+  }, [departId]);
+
   useEffect(() => {
     departId &&
       (async () => {
@@ -13,10 +32,19 @@ function EmployeeSelector({ departId }: { departId?: departId }) {
         setEmployees(await getEmployees(departId));
         setIsLoading(false);
       })();
-  }, [departId, setEmployees]);
+  }, [departId]);
 
   return (
-    <Select isDisabled={!departId} isLoading={isLoading} options={employees} />
+    <Select
+      value={selectedEmployee}
+      isDisabled={!departId}
+      isLoading={isLoading}
+      options={employees}
+      onChange={(selected: any) => {
+        setSelectedEmployee(selected);
+        changeEmployeeId(selected.value);
+      }}
+    />
   );
 }
 

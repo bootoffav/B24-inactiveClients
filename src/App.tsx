@@ -1,8 +1,13 @@
-import "bulma";
+import { useState } from "react";
 import { Form } from "./components/Form";
 import { Progress } from "./components/Progress/Progress";
+import { Result } from "./components/Result/Result";
+import { AppState } from "./types";
+import { EmployeeError } from "./components/EmployeeError";
 
 function App() {
+  const [state, setState] = useState<AppState>("initial");
+
   return (
     <main className="is-0">
       <div className="main-menu">
@@ -11,11 +16,17 @@ function App() {
             APP shows inactive clients in Bitrix24 CRM within specified period
             of time.
           </p>
-          <Form />
+          <Form
+            changeAppState={(newState: AppState) => {
+              setState(newState);
+            }}
+          />
         </section>
       </div>
       <div className="result-menu">
-        <Progress />
+        {state === "started" && <Progress />}
+        {state === "finished" && <Result />}
+        {state === "error" && <EmployeeError />}
       </div>
     </main>
   );
