@@ -13,7 +13,9 @@ function Form({ changeAppState }: FormProps) {
   }
 
   const [departId, setDepartId] = useState<departId | undefined>();
+  // eslint-disable-next-line
   const [employeeId, setEmployeeId] = useState<string>();
+  // eslint-disable-next-line
   const [inactivityPeriod, setInactivityPeriod] = useState<
     string | undefined
   >();
