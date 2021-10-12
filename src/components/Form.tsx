@@ -1,4 +1,3 @@
-import Select from "react-select";
 import React, { useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
 import { AppState, departId } from "../types";
@@ -10,21 +9,9 @@ type FormProps = {
 function Form({ changeAppState }: FormProps) {
   function process(e: React.FormEvent) {
     e.preventDefault();
-    if (!employeeId) {
-      changeAppState("error");
-      return;
-    }
     changeAppState("started");
   }
 
-  const departments = [
-    { value: "8640", label: "Sales Lithuania" },
-    { value: "8496", label: "XM Textiles Romania" },
-  ];
-  const inactivePeriods = [
-    { value: "90", label: "3 months" },
-    { value: "183", label: "6 months" },
-  ];
   const [departId, setDepartId] = useState<departId | undefined>();
   const [employeeId, setEmployeeId] = useState<string>();
   const [inactivityPeriod, setInactivityPeriod] = useState<
@@ -36,11 +23,19 @@ function Form({ changeAppState }: FormProps) {
       <div className="column">
         <label>
           Choose department:
-          <Select
-            autoFocus
-            options={departments}
-            onChange={(e) => e && setDepartId(e.value as departId)}
-          />
+          <div className="select is-fullwidth">
+            <select
+              className="is-focused"
+              required
+              onChange={({ target }: React.BaseSyntheticEvent) => {
+                setDepartId(target.value as departId);
+              }}
+            >
+              <option></option>
+              <option value="8640">Sales Lithuania</option>
+              <option value="8496">XM Textiles Romania</option>
+            </select>
+          </div>
         </label>
       </div>
       <div className="column">
@@ -55,11 +50,18 @@ function Form({ changeAppState }: FormProps) {
       <div className="column">
         <label>
           Inactive period:
-          <Select
-            value={inactivePeriods[1]}
-            options={inactivePeriods}
-            onChange={(e) => setInactivityPeriod(e?.value)}
-          />
+          <div className="select is-fullwidth">
+            <select
+              required
+              onChange={({ target }: React.BaseSyntheticEvent) => {
+                setInactivityPeriod(target.value);
+              }}
+            >
+              <option></option>
+              <option value="90">last 3 months</option>
+              <option value="183">last 6 months</option>
+            </select>
+          </div>
         </label>
       </div>
       <div className="column is-flex is-align-items-flex-end">

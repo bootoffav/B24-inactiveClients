@@ -18,8 +18,8 @@ async function getEmployees(depart: departId): Promise<[]> {
       result
         .filter((employee: any) => employee.ACTIVE)
         .map(({ ID, NAME, LAST_NAME }: any) => ({
-          value: ID,
-          label: `${NAME} ${LAST_NAME}`,
+          ID,
+          NAME: `${NAME} ${LAST_NAME}`,
         }))
     )
     .catch(() => []);

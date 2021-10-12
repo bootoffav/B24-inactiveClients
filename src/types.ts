@@ -1,3 +1,3 @@
 export type departId = "8640" | "8496";
 
-export type AppState = "initial" | "started" | "finished" | "error";
+export type AppState = "initial" | "started" | "finished";

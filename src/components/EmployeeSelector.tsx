@@ -1,4 +1,3 @@
-import Select from "react-select";
 import { getEmployees } from "../B24";
 import { useState, useEffect } from "react";
 import type { departId } from "../types";
@@ -13,17 +12,7 @@ function EmployeeSelector({
   changeEmployeeId,
 }: EmployeeSelectorProps) {
   const [employees, setEmployees] = useState<[]>([]);
-  const [selectedEmployee, setSelectedEmployee] = useState<{
-    value: "";
-    label: "";
-  } | null>();
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setSelectedEmployee(null);
-    changeEmployeeId();
-    // eslint-disable-next-line
-  }, [departId]);
 
   useEffect(() => {
     departId &&
@@ -35,16 +24,22 @@ function EmployeeSelector({
   }, [departId]);
 
   return (
-    <Select
-      value={selectedEmployee}
-      isDisabled={!departId}
-      isLoading={isLoading}
-      options={employees}
-      onChange={(selected: any) => {
-        setSelectedEmployee(selected);
-        changeEmployeeId(selected.value);
-      }}
-    />
+    <div className={`select is-fullwidth ${isLoading ? "is-loading" : ""}`}>
+      <select
+        disabled={!departId}
+        required
+        onChange={({ target }: React.BaseSyntheticEvent) => {
+          changeEmployeeId(target.value);
+        }}
+      >
+        <option></option>
+        {employees.map(({ ID, NAME }: any) => (
+          <option key={ID} value={ID}>
+            {NAME}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
 

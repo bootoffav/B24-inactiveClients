@@ -3,7 +3,6 @@ import { Form } from "./components/Form";
 import { Progress } from "./components/Progress/Progress";
 import { Result } from "./components/Result/Result";
 import { AppState } from "./types";
-import { EmployeeError } from "./components/EmployeeError";
 
 function App() {
   const [state, setState] = useState<AppState>("initial");
@@ -26,7 +25,6 @@ function App() {
       <div className="result-menu">
         {state === "started" && <Progress />}
         {state === "finished" && <Result />}
-        {state === "error" && <EmployeeError />}
       </div>
     </main>
   );
