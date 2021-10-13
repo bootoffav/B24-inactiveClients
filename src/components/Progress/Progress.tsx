@@ -2,14 +2,9 @@ function Progress() {
   return (
     <section className="container">
       <div className="is-flex is-flex-direction-column">
-        <div>
-          <progress
-            className="mt-2 progress is-success"
-            value="35"
-            max="100"
-          ></progress>
+        <div className="columns">
+          <div className="column is-3">Getting data in CRM Companies</div>
         </div>
-        <div>Getting data in CRM Companies</div>
       </div>
     </section>
   );

@@ -1,27 +1,31 @@
 import React, { useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
-import { AppState, departId } from "../types";
+import { departId } from "../types";
 
 type FormProps = {
-  changeAppState: (newState: AppState) => void;
+  process: any;
+  isLoading: boolean;
 };
 
-function Form({ changeAppState }: FormProps) {
-  function process(e: React.FormEvent) {
-    e.preventDefault();
-    changeAppState("started");
-  }
-
+function Form({ process, isLoading }: FormProps) {
   const [departId, setDepartId] = useState<departId | undefined>();
-  // eslint-disable-next-line
   const [employeeId, setEmployeeId] = useState<string>();
-  // eslint-disable-next-line
   const [inactivityPeriod, setInactivityPeriod] = useState<
     string | undefined
   >();
 
   return (
-    <form method="post" className="columns" onSubmit={process}>
+    <form
+      method="post"
+      className="columns"
+      onSubmit={(e) =>
+        process({
+          event: e,
+          employeeId,
+          inactivityPeriod,
+        })
+      }
+    >
       <div className="column">
         <label>
           Choose department:
@@ -67,11 +71,15 @@ function Form({ changeAppState }: FormProps) {
         </label>
       </div>
       <div className="column is-flex is-align-items-flex-end">
-        <input
+        <button
           type="submit"
-          className="button is-info is-fullwidth"
-          value="GET"
-        />
+          className={`button is-info is-fullwidth  ${
+            isLoading ? "is-loading" : ""
+          }`}
+          disabled={isLoading}
+        >
+          GET
+        </button>
       </div>
     </form>
   );

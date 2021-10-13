@@ -1,0 +1,7 @@
+
+Process to find inactive clients:
+  ☐ Get companies
+  ☐ For every company get list of activities
+  ☐ Check if there is any activity within time period, if:
+    ☐ Yes drop this company, go to next one
+    ☐ No add this company to list
