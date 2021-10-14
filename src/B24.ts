@@ -1,5 +1,5 @@
 import { stringify } from "qs";
-import type { departId, Entity, Employee } from "./types";
+import type { departId, Entity, Employee, InActiveData } from "./types";
 
 interface RawEmployee extends Employee {
   ACTIVE: boolean;
@@ -32,8 +32,17 @@ async function getEmployees(depart: departId): Promise<Employee[]> {
     .catch(() => []);
 }
 
-async function getCompanies(responsibleId: string): Promise<Entity[]> {
-  return await getAllData("crm.company.list", {
+async function getEntities(
+  type: keyof InActiveData & string,
+  responsibleId: string
+): Promise<Entity[]> {
+  const map = {
+    companies: "company",
+    contacts: "contact",
+    leads: "lead",
+  };
+
+  return await getAllData(`crm.${map[type]}.list`, {
     order: { DATE_CREATE: "ASC" },
     filter: { ASSIGNED_BY_ID: responsibleId },
     select: ["ID", "TITLE"],
@@ -88,4 +97,4 @@ async function getActivities(
   return allActivities[0];
 }
 
-export { getEmployees, getCompanies, getActivities };
+export { getEmployees, getEntities, getActivities };

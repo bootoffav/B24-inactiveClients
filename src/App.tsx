@@ -3,8 +3,8 @@ import { Form } from "./components/Form";
 import { Progress } from "./components/Progress/Progress";
 import { Result } from "./components/Result/Result";
 import { AppState, Entity, ProcessProps, InActiveData } from "./types";
-import { getCompanies, getActivities } from "./B24";
-import { isInactiveEntity } from "./helpers";
+import { getEntities, getActivities } from "./B24";
+import { isInActiveEntity } from "./helpers";
 
 type inactiveReducerProps = {
   type: "companies" | "contacts" | "leads";
@@ -40,8 +40,9 @@ function App() {
                   type,
                   payload,
                 });
-                setState("finished");
               }
+
+              setState("finished");
             }}
             isLoading={state === "started"}
           />
@@ -57,24 +58,30 @@ function App() {
 
 async function* process(
   params: ProcessProps
-): AsyncGenerator<["companies", Entity[]], any, void> {
-  const companies = await getCompanies(params.employeeId);
-  const inactiveCompanies = [];
+): AsyncGenerator<[keyof InActiveData & string, Entity[]], any, void> {
+  let inactiveEntities: Entity[] = [];
+  for (const type of ["companies", "contacts", "leads"]) {
+    const entities = await getEntities(
+      type as keyof InActiveData & string,
+      params.employeeId
+    );
+    for (const entity of entities) {
+      const lastActivity = await getActivities(entity.ID, 4);
 
-  for (const company of companies) {
-    const lastActivity = await getActivities(company.ID, 4);
-
-    if (lastActivity === undefined) {
-      inactiveCompanies.push({ lastActivity, ...company });
-      continue;
+      if (
+        (lastActivity &&
+          isInActiveEntity(lastActivity, params.inactivityPeriod)) ||
+        !lastActivity
+      ) {
+        inactiveEntities = [
+          ...inactiveEntities,
+          ...[{ lastActivity, ...entity }],
+        ];
+      }
     }
-
-    if (isInactiveEntity(lastActivity, params.inactivityPeriod)) {
-      inactiveCompanies.push({ lastActivity, ...company });
-    }
+    yield [type as "companies" | "contacts" | "leads", inactiveEntities];
   }
-
-  yield ["companies", inactiveCompanies];
 }
 
+function getInActiveEntities() {}
 export default App;
