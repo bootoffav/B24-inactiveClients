@@ -17,6 +17,8 @@ export interface Employee {
 
 export interface Activity {
   LAST_UPDATED: string;
+  PROVIDER_TYPE_ID: string;
+  SUBJECT: string;
 }
 
 export type Entity = {
@@ -26,7 +28,7 @@ export type Entity = {
 };
 
 export interface InActiveData {
-  companies?: Entity[];
-  contacts?: Entity[];
-  leads?: Entity[];
+  company?: Entity[];
+  contact?: Entity[];
+  lead?: Entity[];
 }

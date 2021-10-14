@@ -7,7 +7,7 @@ import { getEntities, getActivities } from "./B24";
 import { isInActiveEntity } from "./helpers";
 
 type inactiveReducerProps = {
-  type: "companies" | "contacts" | "leads";
+  type: "company" | "contact" | "lead";
   payload: Entity[];
 };
 
@@ -59,8 +59,9 @@ function App() {
 async function* process(
   params: ProcessProps
 ): AsyncGenerator<[keyof InActiveData & string, Entity[]], any, void> {
-  let inactiveEntities: Entity[] = [];
-  for (const type of ["companies", "contacts", "leads"]) {
+  // for (const type of ["company", "contact", "lead"]) {
+  for (const type of ["company", "contact"]) {
+    let inactiveEntities: Entity[] = [];
     const entities = await getEntities(
       type as keyof InActiveData & string,
       params.employeeId
@@ -79,9 +80,8 @@ async function* process(
         ];
       }
     }
-    yield [type as "companies" | "contacts" | "leads", inactiveEntities];
+    yield [type as "company" | "contact" | "lead", inactiveEntities];
   }
 }
 
-function getInActiveEntities() {}
 export default App;

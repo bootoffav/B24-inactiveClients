@@ -12,12 +12,6 @@ const B24Config = {
 };
 
 async function getEmployees(depart: departId): Promise<Employee[]> {
-  // return await fetch(B24Config.hostname + B24Config.hook + "user.get", {
-  //   method: "post",
-  //   body: stringify({
-  //     FILTER: { UF_DEPARTMENT: depart },
-  //   }),
-  // })
   return await getAllData("user.get", {
     FILTER: { UF_DEPARTMENT: depart },
   })
@@ -36,16 +30,26 @@ async function getEntities(
   type: keyof InActiveData & string,
   responsibleId: string
 ): Promise<Entity[]> {
-  const map = {
-    companies: "company",
-    contacts: "contact",
-    leads: "lead",
+  const selectMap = {
+    company: ["ID", "TITLE"],
+    contact: ["ID", "NAME", "LAST_NAME"],
+    lead: ["ID", "NAME", "LAST_NAME", "TITLE"],
   };
 
-  return await getAllData(`crm.${map[type]}.list`, {
+  return await getAllData(`crm.${type}.list`, {
     order: { DATE_CREATE: "ASC" },
     filter: { ASSIGNED_BY_ID: responsibleId },
-    select: ["ID", "TITLE"],
+    select: selectMap[type],
+  }).then((entities) => {
+    if (type === "contact") {
+      return entities.map(
+        (entity: Entity & { NAME: string; LAST_NAME: string }) => ({
+          ID: entity.ID,
+          TITLE: `${entity.NAME} ${entity.LAST_NAME}`,
+        })
+      );
+    }
+    return entities;
   });
 }
 
