@@ -2,22 +2,25 @@ import { useReducer, useState } from "react";
 import { Form } from "./components/Form";
 import { Progress } from "./components/Progress/Progress";
 import { Result } from "./components/Result/Result";
-import { AppState, Company, ProcessProps } from "./types";
+import { AppState, Entity, ProcessProps, InActiveData } from "./types";
 import { getCompanies, getActivities } from "./B24";
-import { isOutOfActivityPeriod } from "./helpers";
+import { isInactiveEntity } from "./helpers";
 
 type inactiveReducerProps = {
   type: "companies" | "contacts" | "leads";
-  payload: Company[];
+  payload: Entity[];
 };
 
-function inactiveReducer(state: any, { type, payload }: inactiveReducerProps) {
-  return { [type]: payload };
+function inActiveReducer(
+  state: InActiveData,
+  { type, payload }: inactiveReducerProps
+) {
+  return { ...state, [type]: payload };
 }
 
 function App() {
   const [state, setState] = useState<AppState>("initial");
-  const [inactiveData, dispatch] = useReducer(inactiveReducer, {});
+  const [inActiveData, dispatch] = useReducer(inActiveReducer, {});
 
   return (
     <main className="is-0">
@@ -46,7 +49,7 @@ function App() {
       </div>
       <div className="result-menu">
         {state === "started" && <Progress />}
-        {state === "finished" && <Result inactiveData={inactiveData} />}
+        {state === "finished" && <Result inActiveData={inActiveData} />}
       </div>
     </main>
   );
@@ -54,7 +57,7 @@ function App() {
 
 async function* process(
   params: ProcessProps
-): AsyncGenerator<["companies", Company[]], any, void> {
+): AsyncGenerator<["companies", Entity[]], any, void> {
   const companies = await getCompanies(params.employeeId);
   const inactiveCompanies = [];
 
@@ -66,7 +69,7 @@ async function* process(
       continue;
     }
 
-    if (isOutOfActivityPeriod(lastActivity, params.inactivityPeriod)) {
+    if (isInactiveEntity(lastActivity, params.inactivityPeriod)) {
       inactiveCompanies.push({ lastActivity, ...company });
     }
   }

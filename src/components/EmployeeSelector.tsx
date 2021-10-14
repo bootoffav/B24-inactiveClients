@@ -1,17 +1,17 @@
 import { getEmployees } from "../B24";
 import { useState, useEffect } from "react";
-import type { departId } from "../types";
+import type { departId, Employee } from "../types";
 
 type EmployeeSelectorProps = {
   departId?: departId;
-  changeEmployeeId: any;
+  changeEmployeeId: (id: string) => void;
 };
 
 function EmployeeSelector({
   departId,
   changeEmployeeId,
 }: EmployeeSelectorProps) {
-  const [employees, setEmployees] = useState<[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -29,11 +29,11 @@ function EmployeeSelector({
         disabled={!departId}
         required
         onChange={({ target }: React.BaseSyntheticEvent) => {
-          changeEmployeeId(target.value);
+          changeEmployeeId((target as HTMLInputElement).value);
         }}
       >
         <option></option>
-        {employees.map(({ ID, NAME }: any) => (
+        {employees.map(({ ID, NAME }) => (
           <option key={ID} value={ID}>
             {NAME}
           </option>

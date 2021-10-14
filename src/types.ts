@@ -10,7 +10,23 @@ export interface ProcessProps {
   inactivityPeriod: string;
 }
 
-export type Company = {
+export interface Employee {
+  ID: string;
+  NAME: string;
+}
+
+export interface Activity {
+  LAST_UPDATED: string;
+}
+
+export type Entity = {
   ID: string;
   TITLE: string;
+  lastActivity?: Activity;
 };
+
+export interface InActiveData {
+  companies?: Entity[];
+  contacts?: Entity[];
+  leads?: Entity[];
+}

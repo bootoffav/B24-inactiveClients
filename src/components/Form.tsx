@@ -8,7 +8,7 @@ type FormProps = {
 };
 
 function Form({ process, isLoading }: FormProps) {
-  const [departId, setDepartId] = useState<departId | undefined>();
+  const [departId, setDepartId] = useState<departId>();
   const [employeeId, setEmployeeId] = useState<string>();
   const [inactivityPeriod, setInactivityPeriod] = useState<
     string | undefined
@@ -33,9 +33,9 @@ function Form({ process, isLoading }: FormProps) {
             <select
               className="is-focused"
               required
-              onChange={({ target }: React.BaseSyntheticEvent) => {
-                setDepartId(target.value as departId);
-              }}
+              onChange={({ target }: React.BaseSyntheticEvent) =>
+                setDepartId((target as HTMLInputElement).value as departId)
+              }
             >
               <option></option>
               <option value="8640">Sales Lithuania</option>
@@ -49,7 +49,7 @@ function Form({ process, isLoading }: FormProps) {
           Choose employee:
           <EmployeeSelector
             departId={departId}
-            changeEmployeeId={(id: string) => setEmployeeId(id)}
+            changeEmployeeId={setEmployeeId}
           />
         </label>
       </div>

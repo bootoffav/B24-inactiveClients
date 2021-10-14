@@ -1,15 +1,11 @@
-import type { Company } from "../../types";
+import type { InActiveData } from "../../types";
 import dayjs from "dayjs";
 
-interface CompanyWithLastActivity extends Company {
-  lastActivity: any;
-}
-
-type inactiveDataProps = {
-  inactiveData: any;
+type ResultProps = {
+  inActiveData: InActiveData;
 };
 
-function Result(props: inactiveDataProps) {
+function Result({ inActiveData }: ResultProps) {
   return (
     <section className="container">
       <div className="columns">
@@ -24,7 +20,9 @@ function Result(props: inactiveDataProps) {
                 <th>Last activity date</th>
               </tr>
             </thead>
-            <tbody>{props.inactiveData.companies.map(genRow)}</tbody>
+            <tbody>{genRows("companies", inActiveData)}</tbody>
+            {/* <tbody>{genRows("contacts", inActiveData)}</tbody> */}
+            {/* <tbody>{genRows("leads", inActiveData)}</tbody> */}
           </table>
         </div>
       </div>
@@ -32,29 +30,35 @@ function Result(props: inactiveDataProps) {
   );
 }
 
-function genRow(
-  { ID, TITLE, lastActivity }: CompanyWithLastActivity,
-  index: number
+function genRows(
+  type: keyof InActiveData & string,
+  inActiveData: InActiveData
 ) {
-  return (
-    <tr key={ID}>
-      <th>{index + 1}</th>
-      <td>
-        <a
-          href={`${process.env.REACT_APP_B24_HOSTNAME}/crm/company/details/${ID}/`}
-          title={TITLE}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {TITLE}
-        </a>{" "}
-      </td>
-      <td>
-        {lastActivity
-          ? dayjs(lastActivity.LAST_UPDATED).format("YYYY-MM-DD")
-          : "not known"}
-      </td>
-    </tr>
-  );
+  const entities = inActiveData?.[type];
+  if (entities) {
+    return entities.map(({ ID, TITLE, lastActivity }, index) => {
+      return (
+        <tr key={ID}>
+          <th>{index + 1}</th>
+          <td>
+            <a
+              href={`${process.env.REACT_APP_B24_HOSTNAME}/crm/company/details/${ID}/`}
+              title={TITLE}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {TITLE}
+            </a>{" "}
+          </td>
+          <td>
+            {lastActivity
+              ? dayjs(lastActivity.LAST_UPDATED).format("YYYY-MM-DD")
+              : "not known"}
+          </td>
+        </tr>
+      );
+    });
+  }
 }
+
 export { Result };

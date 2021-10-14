@@ -1,9 +1,10 @@
 import dayjs from "dayjs";
+import { Activity } from "./types";
 
 const today = dayjs();
 
-function isOutOfActivityPeriod(
-  activity: any,
+function isInactiveEntity(
+  activity: Activity,
   inactivityPeriod: string
 ): Boolean {
   const lastPossibleDayForBeingActive = today.subtract(
@@ -13,4 +14,4 @@ function isOutOfActivityPeriod(
   return lastPossibleDayForBeingActive.isAfter(activity.LAST_UPDATED);
 }
 
-export { isOutOfActivityPeriod };
+export { isInactiveEntity };

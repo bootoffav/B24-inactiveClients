@@ -1,31 +1,38 @@
 import { stringify } from "qs";
-import type { departId, Company } from "./types";
+import type { departId, Entity, Employee } from "./types";
+
+interface RawEmployee extends Employee {
+  ACTIVE: boolean;
+  LAST_NAME: string;
+}
 
 const B24Config = {
   hostname: process.env.REACT_APP_B24_HOSTNAME || "",
   hook: process.env.REACT_APP_B24_HOOK || "",
 };
 
-async function getEmployees(depart: departId): Promise<[]> {
-  return await fetch(B24Config.hostname + B24Config.hook + "user.get", {
-    method: "post",
-    body: stringify({
-      FILTER: { UF_DEPARTMENT: depart },
-    }),
+async function getEmployees(depart: departId): Promise<Employee[]> {
+  // return await fetch(B24Config.hostname + B24Config.hook + "user.get", {
+  //   method: "post",
+  //   body: stringify({
+  //     FILTER: { UF_DEPARTMENT: depart },
+  //   }),
+  // })
+  return await getAllData("user.get", {
+    FILTER: { UF_DEPARTMENT: depart },
   })
-    .then((r) => r.json())
-    .then(({ result }: any) =>
-      result
-        .filter((employee: any) => employee.ACTIVE)
-        .map(({ ID, NAME, LAST_NAME }: any) => ({
+    .then((rawEmployees: RawEmployee[]) => {
+      return rawEmployees
+        .filter((employee) => employee.ACTIVE)
+        .map(({ ID, NAME, LAST_NAME }) => ({
           ID,
           NAME: `${NAME} ${LAST_NAME}`,
-        }))
-    )
+        }));
+    })
     .catch(() => []);
 }
 
-async function getCompanies(responsibleId: string): Promise<Company[]> {
+async function getCompanies(responsibleId: string): Promise<Entity[]> {
   return await getAllData("crm.company.list", {
     order: { DATE_CREATE: "ASC" },
     filter: { ASSIGNED_BY_ID: responsibleId },
