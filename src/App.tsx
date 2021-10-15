@@ -4,10 +4,10 @@ import { Progress } from "./components/Progress/Progress";
 import { Result } from "./components/Result/Result";
 import { AppState, Entity, ProcessProps, InActiveData } from "./types";
 import { getEntities, getActivities } from "./B24";
-import { isInActiveEntity } from "./helpers";
+import { inActivityDataTypes, isInActiveEntity } from "./helpers";
 
 type inactiveReducerProps = {
-  type: "company" | "contact" | "lead";
+  type: keyof InActiveData;
   payload: Entity[];
 };
 
@@ -28,7 +28,7 @@ function App() {
         <section className="container mb-4">
           <p className="is-size-4 has-text-centered">
             APP shows inactive clients in Bitrix24 CRM within specified period
-            of time.
+            of time
           </p>
           <Form
             process={async (props: ProcessProps) => {
@@ -59,8 +59,7 @@ function App() {
 async function* process(
   params: ProcessProps
 ): AsyncGenerator<[keyof InActiveData & string, Entity[]], any, void> {
-  // for (const type of ["company", "contact", "lead"]) {
-  for (const type of ["company", "contact"]) {
+  for (const type of inActivityDataTypes) {
     let inactiveEntities: Entity[] = [];
     const entities = await getEntities(
       type as keyof InActiveData & string,
@@ -80,7 +79,7 @@ async function* process(
         ];
       }
     }
-    yield [type as "company" | "contact" | "lead", inactiveEntities];
+    yield [type, inactiveEntities];
   }
 }
 

@@ -1,7 +1,13 @@
 import dayjs from "dayjs";
-import { Activity } from "./types";
+import { Activity, InActiveData } from "./types";
 
 const today = dayjs();
+
+const inActivityDataTypes: (keyof InActiveData)[] = [
+  "company",
+  "contact",
+  "lead",
+];
 
 function isInActiveEntity(
   activity: Activity,
@@ -14,4 +20,4 @@ function isInActiveEntity(
   return lastPossibleDayForBeingActive.isAfter(activity.LAST_UPDATED);
 }
 
-export { isInActiveEntity };
+export { isInActiveEntity, inActivityDataTypes };

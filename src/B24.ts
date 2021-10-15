@@ -13,7 +13,7 @@ const B24Config = {
 
 async function getEmployees(depart: departId): Promise<Employee[]> {
   return await getAllData("user.get", {
-    FILTER: { UF_DEPARTMENT: depart },
+    filter: { UF_DEPARTMENT: depart },
   })
     .then((rawEmployees: RawEmployee[]) => {
       return rawEmployees
@@ -55,11 +55,15 @@ async function getEntities(
 
 async function getAllData(
   method: string,
-  body: any,
+  body: {
+    order?: {};
+    filter?: {};
+    select?: string[];
+  },
   runOnce: boolean = false // for last activity
 ): Promise<any[]> {
   let next = 0;
-  let wholeResult: any = [];
+  let wholeResult: any[] = [];
   while (next !== undefined) {
     const [chunk, currentNext]: any = await fetch(
       B24Config.hostname + B24Config.hook + method,
@@ -90,7 +94,7 @@ async function getActivities(
     "crm.activity.list",
     {
       order: { ID: "DESC" },
-      FILTER: {
+      filter: {
         OWNER_TYPE_ID: ownerTypeId,
         OWNER_ID: ownerId,
       },
