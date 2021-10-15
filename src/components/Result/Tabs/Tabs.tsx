@@ -1,4 +1,4 @@
-import { inActivityDataTypes } from "../../../helpers";
+import { inActivityDataTypes, pluralMap } from "../../../helpers";
 import type { InActiveData } from "../../../types";
 
 type TabsProps = {
@@ -8,20 +8,16 @@ type TabsProps = {
 };
 
 function Tabs({ inActiveData, activeTab, setActiveTab }: TabsProps) {
-  const pluralMap = {
-    company: "Companies",
-    contact: "Contacts",
-    lead: "Leads",
-  };
   return (
     <div className="tabs is-fullwidth">
       <ul>
         {inActivityDataTypes.map((type) => (
-          <li className={`${activeTab === type ? "is-active" : ""}`}>
+          <li key={type} className={`${activeTab === type ? "is-active" : ""}`}>
             <a
               href={`#${type}`}
               id={`${type}`}
               onClick={() => setActiveTab(type)}
+              className="is-capitalized"
             >
               {`${pluralMap[type as keyof InActiveData & string]}`}
             </a>

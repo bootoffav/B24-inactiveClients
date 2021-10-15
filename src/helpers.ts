@@ -9,6 +9,12 @@ const inActivityDataTypes: (keyof InActiveData)[] = [
   "lead",
 ];
 
+const pluralMap = {
+  company: "companies",
+  contact: "contacts",
+  lead: "leads",
+};
+
 function isInActiveEntity(
   activity: Activity,
   inactivityPeriod: string
@@ -20,4 +26,4 @@ function isInActiveEntity(
   return lastPossibleDayForBeingActive.isAfter(activity.LAST_UPDATED);
 }
 
-export { isInActiveEntity, inActivityDataTypes };
+export { isInActiveEntity, pluralMap, inActivityDataTypes };

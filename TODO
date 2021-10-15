@@ -1,7 +1,11 @@
 
 Process to find inactive clients:
-  ☐ Get companies
-  ☐ For every company get list of activities
-  ☐ Check if there is any activity within time period, if:
-    ☐ Yes drop this company, go to next one
-    ☐ No add this company to list
+  ✔ Get companies @done(21-10-15 14:59)
+  ✔ For every company get list of activities @done(21-10-15 14:59)
+  ✔ Check if there is any activity within time period, if: @done(21-10-15 14:59)
+    ✔ Yes drop this company, go to next one @done(21-10-15 14:59)
+    ✔ No add this company to list @done(21-10-15 14:59)
+
+Add styles:
+  ☐ Font icons for tabs
+  ☐ CSS Transition effects

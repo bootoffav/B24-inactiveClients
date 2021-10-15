@@ -29,7 +29,7 @@ export type Entity = {
 };
 
 export interface InActiveData {
-  company?: Entity[];
-  contact?: Entity[];
-  lead?: Entity[];
+  company: Entity[];
+  contact: Entity[];
+  lead: Entity[];
 }

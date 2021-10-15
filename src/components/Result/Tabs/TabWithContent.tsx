@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import type { InActiveData, Entity } from "../../../types";
+import { pluralMap } from "../../../helpers";
 
 function TabWithContent({
   type,
@@ -7,10 +8,10 @@ function TabWithContent({
   activeTab,
 }: {
   type: keyof InActiveData;
-  inActiveEntities?: Entity[];
+  inActiveEntities: Entity[];
   activeTab: boolean;
 }) {
-  return (
+  return inActiveEntities.length ? (
     <table
       className="table center"
       id={type}
@@ -29,6 +30,13 @@ function TabWithContent({
       </thead>
       <tbody>{genRows(type, inActiveEntities)}</tbody>
     </table>
+  ) : (
+    <div
+      className="notification is-primary is-light has-text-centered is-size-3"
+      style={{ display: `${activeTab ? "" : "none"}` }}
+    >
+      Congrats! There are no inactive {pluralMap[type]}
+    </div>
   );
 }
 

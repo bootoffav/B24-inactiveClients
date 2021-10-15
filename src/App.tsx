@@ -20,7 +20,11 @@ function inActiveReducer(
 
 function App() {
   const [state, setState] = useState<AppState>("initial");
-  const [inActiveData, dispatch] = useReducer(inActiveReducer, {});
+  const [inActiveData, dispatch] = useReducer(inActiveReducer, {
+    company: [],
+    contact: [],
+    lead: [],
+  });
 
   return (
     <main className="is-0">
