@@ -7,6 +7,20 @@ type FormProps = {
   isLoading: boolean;
 };
 
+const departmentMap = {
+  "Sales Lithuania": 8640,
+  "XM Textiles Brazil": 113,
+  "XM Textiles Hungary": 8596,
+  "XM Textiles Italy": 8560,
+  "XM Textiles Kazakhstan": 8618,
+  "XM Textiles Portugal": 8520,
+  "XM Textiles Romania": 8496,
+  "XM Textiles Russia": 8622,
+  "XM Textiles Spain": 8470,
+  "XM Textiles Turkey": 8638,
+  "XM Textiles UK": 8625,
+};
+
 function Form({ process, isLoading }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
   const [employeeId, setEmployeeId] = useState<string>();
@@ -39,8 +53,11 @@ function Form({ process, isLoading }: FormProps) {
               }
             >
               <option></option>
-              <option value="8640">Sales Lithuania</option>
-              <option value="8496">XM Textiles Romania</option>
+              {Object.entries(departmentMap).map(([label, id]) => (
+                <option key={id} value={id}>
+                  {label}
+                </option>
+              ))}
             </select>
           </div>
         </label>

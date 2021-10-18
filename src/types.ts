@@ -17,6 +17,9 @@ export interface Employee {
 }
 
 export interface Activity {
+  ID: string;
+  ASSOCIATED_ENTITY_ID: string;
+  RESPONSIBLE_ID: string;
   LAST_UPDATED: string;
   PROVIDER_TYPE_ID: string;
   SUBJECT: string;

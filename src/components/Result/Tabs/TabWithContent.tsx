@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import type { InActiveData, Entity } from "../../../types";
+import type { InActiveData, Entity, Activity } from "../../../types";
 import { pluralMap } from "../../../helpers";
 
 function TabWithContent({
@@ -56,17 +56,45 @@ function genRows(type: keyof InActiveData, inActiveEntities?: Entity[]) {
                 {TITLE}
               </a>{" "}
             </td>
-            <td>
-              {lastActivity
-                ? dayjs(lastActivity.LAST_UPDATED).format("YYYY-MM-DD")
-                : "-"}
-            </td>
-            <td>{lastActivity ? lastActivity.PROVIDER_TYPE_ID : "-"}</td>
-            <td>{lastActivity ? lastActivity.SUBJECT : "-"}</td>
+            <td>{printActivityDetail("LAST_UPDATED", lastActivity)}</td>
+            <td>{printActivityDetail("PROVIDER_TYPE_ID", lastActivity)}</td>
+            <td>{printActivityDetail("SUBJECT", lastActivity)}</td>
           </tr>
         );
       })
     : "";
 }
 
+type ActivityDetailType = "LAST_UPDATED" | "PROVIDER_TYPE_ID" | "SUBJECT";
+
+function printActivityDetail(
+  type: ActivityDetailType,
+  lastActivity?: Activity
+) {
+  if (!lastActivity) return "-";
+  let valueToReturn;
+  switch (type) {
+    case "LAST_UPDATED":
+      valueToReturn = dayjs(lastActivity[type]).format("YYYY-MM-DD");
+      break;
+    case "SUBJECT":
+      valueToReturn =
+        lastActivity.PROVIDER_TYPE_ID === "TASK" ? (
+          <a
+            href={`${process.env.REACT_APP_B24_HOSTNAME}/company/personal/user/${lastActivity.RESPONSIBLE_ID}/tasks/task/view/${lastActivity.ASSOCIATED_ENTITY_ID}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {lastActivity.SUBJECT}
+          </a>
+        ) : (
+          lastActivity.SUBJECT
+        );
+      break;
+    default:
+      valueToReturn = lastActivity[type];
+  }
+
+  return valueToReturn;
+}
 export { TabWithContent };
