@@ -7,19 +7,21 @@ import App from "./App";
 
 netlifyIdentity.init();
 
-// netlifyIdentity.on("login", () => {
-// netlifyIdentity.close();
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
-// });
+netlifyIdentity.on("login", () => {
+  netlifyIdentity.close();
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+});
 
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <App />
-//   </React.StrictMode>,
-//   document.getElementById("root")
-// );
+netlifyIdentity.currentUser()
+  ? ReactDOM.render(
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>,
+      document.getElementById("root")
+    )
+  : netlifyIdentity.open("login");
