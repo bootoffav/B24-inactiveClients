@@ -15,6 +15,9 @@ const pluralMap = {
   lead: "leads",
 };
 
+const delay = async (ms = 200) =>
+  await new Promise((res) => setTimeout(res, ms));
+
 function isInActiveEntity(
   activity: Activity,
   inactivityPeriod: string
@@ -26,4 +29,4 @@ function isInActiveEntity(
   return lastPossibleDayForBeingActive.isAfter(activity.LAST_UPDATED);
 }
 
-export { isInActiveEntity, pluralMap, inActivityDataTypes };
+export { isInActiveEntity, pluralMap, inActivityDataTypes, delay };

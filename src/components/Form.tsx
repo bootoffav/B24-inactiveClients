@@ -27,12 +27,13 @@ function Form({ process, isLoading }: FormProps) {
       }
     >
       <div className="column">
-        <label>
+        <label htmlFor="department" aria-label="department">
           Choose department:
           <div className="select is-fullwidth">
             <select
               className="is-focused"
               required
+              id="department"
               onChange={({ target }: React.BaseSyntheticEvent) =>
                 setDepartId((target as HTMLInputElement).value as departId)
               }
@@ -45,7 +46,7 @@ function Form({ process, isLoading }: FormProps) {
         </label>
       </div>
       <div className="column">
-        <label>
+        <label htmlFor="employee" aria-label="employee">
           Choose employee:
           <EmployeeSelector
             departId={departId}
@@ -54,11 +55,12 @@ function Form({ process, isLoading }: FormProps) {
         </label>
       </div>
       <div className="column">
-        <label>
+        <label htmlFor="inactivePeriod" aria-label="inactive period">
           Inactive period:
           <div className="select is-fullwidth">
             <select
               required
+              id="inactivePeriod"
               onChange={({ target }: React.BaseSyntheticEvent) => {
                 setInactivityPeriod(target.value);
               }}

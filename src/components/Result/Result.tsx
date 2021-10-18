@@ -11,7 +11,7 @@ type ResultProps = {
 function Result({ inActiveData }: ResultProps) {
   const [activeTab, setActiveTab] = useState<keyof InActiveData>("company");
   return (
-    <section className="container mb-6">
+    <section className="container">
       <Tabs
         inActiveData={inActiveData}
         activeTab={activeTab}

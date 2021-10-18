@@ -33,3 +33,5 @@ export interface InActiveData {
   contact: Entity[];
   lead: Entity[];
 }
+
+export type ProgressTuple = [number, number];

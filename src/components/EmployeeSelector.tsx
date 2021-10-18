@@ -28,6 +28,7 @@ function EmployeeSelector({
       <select
         disabled={!departId}
         required
+        id="employee"
         onChange={({ target }: React.BaseSyntheticEvent) => {
           changeEmployeeId((target as HTMLInputElement).value);
         }}
