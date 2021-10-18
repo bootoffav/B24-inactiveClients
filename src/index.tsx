@@ -16,3 +16,14 @@ netlifyIdentity.on("login", () => {
     document.getElementById("root")
   );
 });
+
+if (!netlifyIdentity.currentUser()) {
+  netlifyIdentity.open();
+} else {
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+}
