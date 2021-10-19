@@ -22,7 +22,7 @@ async function* process(
       yield [type, [index, entities.length]];
 
       await delay(); // to exclude hitting B24 endpoint limits
-      const lastActivity = await getActivities(entity.ID, 4);
+      const lastActivity = await getActivities(entity.ID, type);
 
       if (
         (lastActivity &&

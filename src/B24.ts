@@ -88,14 +88,19 @@ async function getAllData(
 
 async function getActivities(
   ownerId: string,
-  ownerTypeId: number
+  type: keyof InActiveData
 ): Promise<any> {
+  const ownerTypeIdMap = {
+    company: 4,
+    contact: 3,
+    lead: 1,
+  };
   const allActivities = await getAllData(
     "crm.activity.list",
     {
       order: { ID: "DESC" },
       filter: {
-        OWNER_TYPE_ID: ownerTypeId,
+        OWNER_TYPE_ID: ownerTypeIdMap[type],
         OWNER_ID: ownerId,
       },
     },
