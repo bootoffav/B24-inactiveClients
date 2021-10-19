@@ -24,6 +24,7 @@ function App() {
     contact: [],
     lead: [],
   });
+
   const [progressState, dispatchProgressReducer] = useReducer(
     progressReducer,
     initProgressState

@@ -17,9 +17,12 @@ function Tabs({ inActiveData, activeTab, setActiveTab }: TabsProps) {
               href={`#${type}`}
               id={`${type}`}
               onClick={() => setActiveTab(type)}
-              className="is-capitalized"
+              className="has-text-primary-dark is-capitalized"
             >
               {`${pluralMap[type as keyof InActiveData & string]}`}
+              <span className="ml-2">
+                <sup>({inActiveData[type].length})</sup>
+              </span>
             </a>
           </li>
         ))}

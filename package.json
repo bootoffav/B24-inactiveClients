@@ -1,5 +1,5 @@
 {
-  "name": "inactive_clients_spa",
+  "name": "inactive_clients",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -42,10 +42,10 @@
     ]
   },
   "devDependencies": {
-    "@types/netlify-identity-widget": "^1.9.2",
-    "@types/qs": "^6.9.7",
     "@types/jest": "^26.0.15",
+    "@types/netlify-identity-widget": "^1.9.2",
     "@types/node": "^12.0.0",
+    "@types/qs": "^6.9.7",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0"
   }

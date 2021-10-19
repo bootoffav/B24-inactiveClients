@@ -1,5 +1,12 @@
 import { stringify } from "qs";
-import type { departId, Entity, Employee, InActiveData } from "./types";
+import type {
+  departId,
+  Entity,
+  Employee,
+  InActiveData,
+  Activity,
+} from "./types";
+import { findLatestActivity } from "./helpers";
 
 interface RawEmployee extends Employee {
   ACTIVE: boolean;
@@ -86,6 +93,21 @@ async function getAllData(
   return wholeResult;
 }
 
+async function getCompanyContacts(companyId: string): Promise<string[]> {
+  return await getAllData(
+    "crm.contact.list",
+    {
+      filter: {
+        COMPANY_ID: companyId,
+      },
+      select: ["ID"],
+    },
+    true
+  )
+    .then((contacts) => contacts.map((contact) => contact.ID))
+    .catch(() => []);
+}
+
 async function getActivities(
   ownerId: string,
   type: keyof InActiveData
@@ -106,6 +128,35 @@ async function getActivities(
     },
     true
   );
+
+  if (type === "company") {
+    let allLastActivitiesForContacts: Activity[] = [];
+
+    for (const contactId of await getCompanyContacts(ownerId)) {
+      const activities = await getAllData(
+        "crm.activity.list",
+        {
+          order: { ID: "DESC" },
+          filter: {
+            OWNER_TYPE_ID: ownerTypeIdMap.contact,
+            OWNER_ID: contactId,
+          },
+        },
+        true
+      );
+      if (activities.length) {
+        allLastActivitiesForContacts = [
+          ...allLastActivitiesForContacts,
+          activities[0],
+        ];
+      }
+    }
+
+    return findLatestActivity([
+      ...allLastActivitiesForContacts,
+      allActivities[0], // companie's own activity
+    ]);
+  }
 
   return allActivities[0];
 }

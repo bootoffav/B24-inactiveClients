@@ -13,7 +13,7 @@ function TabWithContent({
 }) {
   return inActiveEntities.length ? (
     <table
-      className="table center"
+      className="table is-hoverable center"
       id={type}
       style={{ display: `${activeTab ? "" : "none"}` }}
     >
