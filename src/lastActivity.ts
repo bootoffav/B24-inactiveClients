@@ -29,7 +29,7 @@ async function getCompanyContacts(companyId: string): Promise<string[]> {
 async function getLastActivity(
   ownerId: string,
   type: keyof InActiveData
-): Promise<Activity> {
+): Promise<Activity | undefined> {
   const ownerTypeIdMap = {
     company: 4,
     contact: 3,

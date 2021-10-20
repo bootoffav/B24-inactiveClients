@@ -24,9 +24,7 @@ const departmentMap = {
 function Form({ process, isLoading }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
   const [employeeId, setEmployeeId] = useState<string>();
-  const [inactivityPeriod, setInactivityPeriod] = useState<
-    string | undefined
-  >();
+  const [inactivityPeriod, setInactivityPeriod] = useState<string>("183");
 
   return (
     <form
@@ -81,8 +79,10 @@ function Form({ process, isLoading }: FormProps) {
               onChange={({ target }: React.BaseSyntheticEvent) => {
                 setInactivityPeriod(target.value);
               }}
+              defaultValue={inactivityPeriod}
             >
               <option></option>
+              <option value="30">last month</option>
               <option value="90">last 3 months</option>
               <option value="183">last 6 months</option>
             </select>
