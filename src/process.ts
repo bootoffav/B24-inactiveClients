@@ -1,5 +1,6 @@
 import { delay, isInActiveEntity, inActivityDataTypes } from "./helpers";
-import { getEntities, getActivities } from "./B24";
+import { getEntities } from "./B24";
+import { getLastActivity } from "./lastActivity";
 import { ProcessProps, InActiveData, Entity, ProgressTuple } from "./types";
 
 async function* process(
@@ -22,7 +23,7 @@ async function* process(
       yield [type, [index, entities.length]];
 
       await delay(); // to exclude hitting B24 endpoint limits
-      const lastActivity = await getActivities(entity.ID, type);
+      const lastActivity = await getLastActivity(entity.ID, type);
 
       if (
         (lastActivity &&

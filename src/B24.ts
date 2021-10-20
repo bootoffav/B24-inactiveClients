@@ -1,12 +1,5 @@
 import { stringify } from "qs";
-import type {
-  departId,
-  Entity,
-  Employee,
-  InActiveData,
-  Activity,
-} from "./types";
-import { findLatestActivity } from "./helpers";
+import type { departId, Entity, Employee, InActiveData } from "./types";
 
 interface RawEmployee extends Employee {
   ACTIVE: boolean;
@@ -20,7 +13,7 @@ const B24Config = {
 
 async function getEmployees(depart: departId): Promise<Employee[]> {
   return await getAllData("user.get", {
-    filter: { UF_DEPARTMENT: depart },
+    FILTER: { UF_DEPARTMENT: depart },
   })
     .then((rawEmployees: RawEmployee[]) => {
       return rawEmployees
@@ -44,9 +37,9 @@ async function getEntities(
   };
 
   return await getAllData(`crm.${type}.list`, {
-    order: { DATE_CREATE: "ASC" },
-    filter: { ASSIGNED_BY_ID: responsibleId },
-    select: selectMap[type],
+    ORDER: { DATE_CREATE: "ASC" },
+    FILTER: { ASSIGNED_BY_ID: responsibleId },
+    SELECT: selectMap[type],
   }).then((entities) => {
     if (type === "contact") {
       return entities.map(
@@ -63,9 +56,9 @@ async function getEntities(
 async function getAllData(
   method: string,
   body: {
-    order?: {};
-    filter?: {};
-    select?: string[];
+    ORDER?: {};
+    FILTER?: {};
+    SELECT?: string[];
   },
   runOnce: boolean = false // for last activity
 ): Promise<any[]> {
@@ -93,72 +86,4 @@ async function getAllData(
   return wholeResult;
 }
 
-async function getCompanyContacts(companyId: string): Promise<string[]> {
-  return await getAllData(
-    "crm.contact.list",
-    {
-      filter: {
-        COMPANY_ID: companyId,
-      },
-      select: ["ID"],
-    },
-    true
-  )
-    .then((contacts) => contacts.map((contact) => contact.ID))
-    .catch(() => []);
-}
-
-async function getActivities(
-  ownerId: string,
-  type: keyof InActiveData
-): Promise<any> {
-  const ownerTypeIdMap = {
-    company: 4,
-    contact: 3,
-    lead: 1,
-  };
-  const allActivities = await getAllData(
-    "crm.activity.list",
-    {
-      order: { ID: "DESC" },
-      filter: {
-        OWNER_TYPE_ID: ownerTypeIdMap[type],
-        OWNER_ID: ownerId,
-      },
-    },
-    true
-  );
-
-  if (type === "company") {
-    let allLastActivitiesForContacts: Activity[] = [];
-
-    for (const contactId of await getCompanyContacts(ownerId)) {
-      const activities = await getAllData(
-        "crm.activity.list",
-        {
-          order: { ID: "DESC" },
-          filter: {
-            OWNER_TYPE_ID: ownerTypeIdMap.contact,
-            OWNER_ID: contactId,
-          },
-        },
-        true
-      );
-      if (activities.length) {
-        allLastActivitiesForContacts = [
-          ...allLastActivitiesForContacts,
-          activities[0],
-        ];
-      }
-    }
-
-    return findLatestActivity([
-      ...allLastActivitiesForContacts,
-      allActivities[0], // companie's own activity
-    ]);
-  }
-
-  return allActivities[0];
-}
-
-export { getEmployees, getEntities, getActivities };
+export { getEmployees, getEntities, getAllData };

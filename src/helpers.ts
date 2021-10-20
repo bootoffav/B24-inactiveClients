@@ -29,19 +29,4 @@ function isInActiveEntity(
   return lastPossibleDayForBeingActive.isAfter(activity.LAST_UPDATED);
 }
 
-function findLatestActivity(activities: Activity[]): Activity {
-  return activities.reduce((curLastActivity, currentActivity) =>
-    currentActivity.LAST_UPDATED &&
-    dayjs(curLastActivity.LAST_UPDATED).isAfter(currentActivity.LAST_UPDATED)
-      ? curLastActivity
-      : currentActivity
-  );
-}
-
-export {
-  isInActiveEntity,
-  pluralMap,
-  findLatestActivity,
-  inActivityDataTypes,
-  delay,
-};
+export { isInActiveEntity, pluralMap, inActivityDataTypes, delay };
