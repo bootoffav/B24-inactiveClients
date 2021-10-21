@@ -16,14 +16,12 @@ import {
   progressReducer,
   initProgressState,
 } from "./reducers";
-import testData from "./testData";
 
 function App() {
-  const [state, setState] = useState<AppState>("finished");
-  // @ts-ignore
+  const [state, setState] = useState<AppState>("initial");
   const [inActiveData, dispatchInActiveReducer] = useReducer(inActiveReducer, {
-    company: testData.company,
-    contact: testData.contact,
+    company: [],
+    contact: [],
     lead: [],
   });
 
@@ -56,7 +54,6 @@ function App() {
                     payload: payload as ProgressTuple,
                   });
                 } else {
-                  // @ts-ignore
                   dispatchInActiveReducer({
                     type,
                     payload: payload as Entity[],

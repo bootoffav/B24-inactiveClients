@@ -5,9 +5,12 @@ table {
 th:first-child {
   width: 5%;
 }
+th:nth-child(2) {
+  width: 25%;
+}
 
 th:last-child {
-  width: 50%;
+  width: 45%;
 }
 
 td {

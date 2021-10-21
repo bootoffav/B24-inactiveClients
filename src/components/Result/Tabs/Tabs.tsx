@@ -20,8 +20,11 @@ function Tabs({ inActiveData, activeTab, setActiveTab }: TabsProps) {
               className="has-text-primary-dark is-capitalized"
             >
               {`${pluralMap[type as keyof InActiveData & string]}`}
-              <span className="ml-2">
-                <sup>({inActiveData[type].length})</sup>
+              <span
+                className="badge is-info is-light"
+                style={{ position: "relative" }}
+              >
+                {inActiveData[type].length}
               </span>
             </a>
           </li>

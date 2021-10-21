@@ -40,7 +40,10 @@ function TabWithContent({
     []
   );
 
-  const data = useMemo(() => genRows(inActiveEntities), [inActiveEntities]);
+  const data = useMemo(
+    () => genRows(inActiveEntities, type),
+    [inActiveEntities, type]
+  );
   const pageSize = 20;
 
   const {
@@ -135,14 +138,28 @@ function TabWithContent({
   );
 }
 
-function genRows(inActiveEntities: Entity[]) {
-  return inActiveEntities.map(({ TITLE, lastActivity }) => ({
-    title: TITLE,
+function genRows(inActiveEntities: Entity[], type: keyof InActiveData) {
+  return inActiveEntities.map(({ ID, TITLE, lastActivity }) => ({
+    title: printLink({ ID, TITLE, type }),
     lastActivityDate: printActivityDetail("LAST_UPDATED", lastActivity),
     activityType: printActivityDetail("PROVIDER_TYPE_ID", lastActivity),
     subject: printActivityDetail("SUBJECT", lastActivity),
   }));
 }
+
+const printLink = ({
+  ID,
+  TITLE,
+  type,
+}: {
+  ID: string;
+  TITLE: string;
+  type: keyof InActiveData;
+}) => (
+  <a href={`${process.env.REACT_APP_B24_HOSTNAME}/crm/${type}/details/${ID}}`}>
+    {TITLE}
+  </a>
+);
 
 type ActivityDetailType = "LAST_UPDATED" | "PROVIDER_TYPE_ID" | "SUBJECT";
 

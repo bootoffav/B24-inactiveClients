@@ -14,9 +14,9 @@ table.center {
   margin-right: auto;
 }
 
-// .result-menu {
-//   background-color: lemonchiffon;
-// }
+@import "~@creativebulma/bulma-tooltip/dist/bulma-tooltip.min.css";
+@import "~@creativebulma/bulma-badge/dist/bulma-badge.min.css";
+
 // @import "~bulma/sass/utilities/_all.sass";
 // @import "~bulma/sass/grid/columns.sass";
 // @import "~bulma/sass/elements/container.sass";
