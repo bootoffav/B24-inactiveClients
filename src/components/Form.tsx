@@ -73,7 +73,7 @@ function Form({ process, isLoading }: FormProps) {
         <label htmlFor="inactivePeriod" aria-label="inactive period">
           Inactive period:
           <div
-            data-tooltip="Choose period time for which clients have not been contacted by the employee"
+            data-tooltip="Choose time period for which clients have not been contacted by the employee"
             className="select is-fullwidth"
           >
             <select

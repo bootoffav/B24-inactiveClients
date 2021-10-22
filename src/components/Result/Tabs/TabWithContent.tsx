@@ -1,9 +1,8 @@
 import { useMemo } from "react";
-import { useTable, usePagination } from "react-table";
+import { useTable, usePagination, useSortBy } from "react-table";
 import dayjs from "dayjs";
-import type { InActiveData, Entity, Activity } from "../../../types";
+import type { InActiveData, Entity } from "../../../types";
 import EmptyTab from "./EmptyTab";
-import styles from "./TabWithContent.module.css";
 
 function TabWithContent({
   type,
@@ -18,7 +17,6 @@ function TabWithContent({
     () => [
       {
         Header: "#",
-        accessor: "position",
       },
       {
         Header: "Name",
@@ -45,7 +43,7 @@ function TabWithContent({
     [inActiveEntities, type]
   );
   const pageSize = 20;
-
+  // debugger;
   const {
     getTableProps,
     headerGroups,
@@ -62,22 +60,40 @@ function TabWithContent({
       // @ts-expect-error
       columns,
       data,
-      initialState: { pageSize },
+      initialState: {
+        pageSize,
+        sortBy: [
+          {
+            id: "title",
+          },
+        ],
+      },
     },
+    useSortBy,
     usePagination
   );
 
   return inActiveEntities.length ? (
     <section style={{ display: `${activeTab ? "" : "none"}` }}>
-      <table
-        className="table is-hoverable is-fullwidth center"
-        {...getTableProps()}
-      >
+      <table className={`table is-hoverable is-fullwidth`} {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+              {headerGroup.headers.map((column, i: number) => (
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render("Header")}
+                  <span>
+                    {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <span className="is-pulled-right">🔽</span>
+                      ) : (
+                        <span className="is-pulled-right">🔼</span>
+                      )
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                </th>
               ))}
             </tr>
           ))}
@@ -88,13 +104,11 @@ function TabWithContent({
             return (
               <tr {...row.getRowProps()}>
                 {row.cells.map((cell: any) =>
-                  cell.column.id === "position" ? (
-                    <td className={styles.equalWidth} key={i}>
-                      {pageIndex * pageSize + (i + 1)}
-                    </td>
+                  cell.column.id === "#" ? (
+                    <td key={i}>{pageIndex * pageSize + (i + 1)}</td>
                   ) : (
                     <td key={i} {...cell.getCellProps()}>
-                      {cell.render("Cell")}
+                      {cellView(cell)}
                     </td>
                   )
                 )}
@@ -140,57 +154,68 @@ function TabWithContent({
 
 function genRows(inActiveEntities: Entity[], type: keyof InActiveData) {
   return inActiveEntities.map(({ ID, TITLE, lastActivity }) => ({
-    title: printLink({ ID, TITLE, type }),
-    lastActivityDate: printActivityDetail("LAST_UPDATED", lastActivity),
-    activityType: printActivityDetail("PROVIDER_TYPE_ID", lastActivity),
-    subject: printActivityDetail("SUBJECT", lastActivity),
+    title: TITLE,
+    lastActivityDate: lastActivity?.LAST_UPDATED,
+    activityType:
+      lastActivity && lastActivity.PROVIDER_TYPE_ID !== null
+        ? lastActivity.PROVIDER_TYPE_ID
+        : undefined,
+    subject: lastActivity?.SUBJECT,
+    payload: {
+      id: ID,
+      type,
+      responsibleId: lastActivity?.RESPONSIBLE_ID,
+      accossiateEntityId: lastActivity?.ASSOCIATED_ENTITY_ID,
+    },
   }));
 }
 
 const printLink = ({
-  ID,
-  TITLE,
+  id,
+  text,
   type,
 }: {
-  ID: string;
-  TITLE: string;
+  id: string;
+  text: string;
   type: keyof InActiveData;
 }) => (
-  <a href={`${process.env.REACT_APP_B24_HOSTNAME}/crm/${type}/details/${ID}}`}>
-    {TITLE}
+  <a
+    href={`${process.env.REACT_APP_B24_HOSTNAME}/crm/${type}/details/${id}/`}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    {text}
   </a>
 );
 
-type ActivityDetailType = "LAST_UPDATED" | "PROVIDER_TYPE_ID" | "SUBJECT";
-
-function printActivityDetail(
-  type: ActivityDetailType,
-  lastActivity?: Activity
-): JSX.Element {
-  if (!lastActivity) return <>-</>;
-  let valueToReturn;
-  switch (type) {
-    case "LAST_UPDATED":
-      valueToReturn = dayjs(lastActivity[type]).format("YYYY-MM-DD");
-      break;
-    case "SUBJECT":
-      valueToReturn =
-        lastActivity.PROVIDER_TYPE_ID === "TASK" ? (
-          <a
-            href={`${process.env.REACT_APP_B24_HOSTNAME}/company/personal/user/${lastActivity.RESPONSIBLE_ID}/tasks/task/view/${lastActivity.ASSOCIATED_ENTITY_ID}/`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {lastActivity.SUBJECT}
-          </a>
-        ) : (
-          lastActivity.SUBJECT
-        );
-      break;
+function cellView({ column, value, row }: any) {
+  const { payload, activityType } = row.original;
+  switch (column.id) {
+    case "title":
+      return printLink({ id: payload.id, text: value, type: payload.type });
+    case "lastActivityDate":
+      return value ? dayjs(value).format("YYYY-MM-DD") : "-";
+    case "activityType":
+      return (
+        <span className="is-capitalized">
+          {value ? value.toLowerCase() : "-"}
+        </span>
+      );
+    case "subject":
+      return activityType === "TASK" ? (
+        <a
+          href={`${process.env.REACT_APP_B24_HOSTNAME}/company/personal/user/${payload.responsibleId}/tasks/task/view/${payload.accossiateEntityId}/`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {value}
+        </a>
+      ) : (
+        value || "-"
+      );
     default:
-      valueToReturn = lastActivity[type];
+      return "-";
   }
-
-  return <>{valueToReturn}</>;
 }
+
 export { TabWithContent };
