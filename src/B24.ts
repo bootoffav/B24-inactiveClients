@@ -11,6 +11,36 @@ const B24Config = {
   hook: process.env.REACT_APP_B24_HOOK || "",
 };
 
+export type Department = { name: string; id: string };
+/**
+ *
+ * @param ids departmentIds taken from B24 company structure
+ * @returns array of department names and their respective ids
+ */
+async function getDepartments(
+  ids = [8640, 113, 8596, 8560, 8618, 8520, 8496, 8622, 8470, 8638, 8625]
+): Promise<Department[]> {
+  let departments: Department[] = [];
+
+  for (const ID of ids) {
+    await fetch(B24Config.hostname + B24Config.hook + "department.get", {
+      method: "post",
+      body: stringify({
+        ID,
+      }),
+    })
+      .then((r) => r.json())
+      .then(({ result }) => {
+        if (result.length === 1) {
+          const { ID, NAME } = result[0];
+          departments.push({ name: NAME, id: ID });
+        }
+      });
+  }
+
+  return departments;
+}
+
 async function getEmployees(depart: departId): Promise<Employee[]> {
   return await getAllData("user.get", {
     FILTER: { UF_DEPARTMENT: depart },
@@ -86,4 +116,4 @@ async function getAllData(
   return wholeResult;
 }
 
-export { getEmployees, getEntities, getAllData };
+export { getEmployees, getEntities, getAllData, getDepartments };

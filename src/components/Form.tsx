@@ -1,30 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
 import { departId } from "../types";
+import { Department, getDepartments } from "../B24";
 
 type FormProps = {
   process: any;
   isLoading: boolean;
 };
 
-const departmentMap = {
-  "Sales Lithuania": 8640,
-  "XM Textiles Brazil": 113,
-  "XM Textiles Hungary": 8596,
-  "XM Textiles Italy": 8560,
-  "XM Textiles Kazakhstan": 8618,
-  "XM Textiles Portugal": 8520,
-  "XM Textiles Romania": 8496,
-  "XM Textiles Russia": 8622,
-  "XM Textiles Spain": 8470,
-  "XM Textiles Turkey": 8638,
-  "XM Textiles UK": 8625,
-};
-
 function Form({ process, isLoading }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
   const [employeeId, setEmployeeId] = useState<string>();
   const [inactivityPeriod, setInactivityPeriod] = useState<string>("183");
+  const [departments, setDepartments] = useState<Department[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      setDepartments(await getDepartments());
+    })();
+  }, []);
 
   return (
     <form
@@ -41,7 +35,12 @@ function Form({ process, isLoading }: FormProps) {
       <div className="column">
         <label htmlFor="department" aria-label="department">
           Choose department:
-          <div className="select is-fullwidth">
+          <div
+            className={`select is-fullwidth ${
+              departments.length ? "" : "is-loading"
+            }
+          `}
+          >
             <select
               className="is-focused"
               required
@@ -51,9 +50,9 @@ function Form({ process, isLoading }: FormProps) {
               }
             >
               <option></option>
-              {Object.entries(departmentMap).map(([label, id]) => (
+              {departments.map(({ name, id }) => (
                 <option key={id} value={id}>
-                  {label}
+                  {name}
                 </option>
               ))}
             </select>
