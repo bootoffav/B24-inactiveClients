@@ -22,10 +22,8 @@ function isInActiveEntity(
   activity: Activity,
   inactivityPeriod: string
 ): Boolean {
-  const lastPossibleDayForBeingActive = today.subtract(
-    Number(inactivityPeriod),
-    "days"
-  );
+  const [amount, unit] = inactivityPeriod.split(" ");
+  const lastPossibleDayForBeingActive = today.subtract(Number(amount), unit);
   return lastPossibleDayForBeingActive.isAfter(activity.LAST_UPDATED);
 }
 

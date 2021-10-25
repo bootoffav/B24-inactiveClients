@@ -11,7 +11,7 @@ type FormProps = {
 function Form({ process, isLoading }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
   const [employeeId, setEmployeeId] = useState<string>();
-  const [inactivityPeriod, setInactivityPeriod] = useState<string>("183");
+  const [inactivityPeriod, setInactivityPeriod] = useState<string>("6 month");
   const [departments, setDepartments] = useState<Department[]>([]);
 
   useEffect(() => {
@@ -84,9 +84,10 @@ function Form({ process, isLoading }: FormProps) {
               defaultValue={inactivityPeriod}
             >
               <option></option>
-              <option value="30">last month</option>
-              <option value="90">last 3 months</option>
-              <option value="183">last 6 months</option>
+              <option value="1 month">last month</option>
+              <option value="3 month">last 3 months</option>
+              <option value="6 month">last 6 months</option>
+              <option value="1 year">1 year</option>
             </select>
           </div>
         </label>
