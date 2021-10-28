@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
-import { departId } from "../types";
+import { departId, Employee } from "../types";
 import { Department, getDepartments } from "../B24";
+import netlifyIdentity from "netlify-identity-widget";
 
 type FormProps = {
   process: any;
@@ -10,10 +11,12 @@ type FormProps = {
 
 function Form({ process, isLoading }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
-  const [employeeId, setEmployeeId] = useState<string>();
+  const [employee, setEmployee] = useState<Employee>();
   const [inactivityPeriod, setInactivityPeriod] = useState<string>("6 month");
   const [departments, setDepartments] = useState<Department[]>([]);
 
+  const supervisor =
+    netlifyIdentity.currentUser()?.email !== "inactiveclients@xmtextiles.eu";
   useEffect(() => {
     (async () => {
       setDepartments(await getDepartments());
@@ -24,13 +27,15 @@ function Form({ process, isLoading }: FormProps) {
     <form
       method="post"
       className="columns"
-      onSubmit={(e) =>
+      onSubmit={(event) => {
+        event.preventDefault();
+        const output = (event.nativeEvent as any).submitter.value;
         process({
-          event: e,
-          employeeId,
+          output,
+          employee,
           inactivityPeriod,
-        })
-      }
+        });
+      }}
     >
       <div className="column">
         <label htmlFor="department" aria-label="department">
@@ -64,7 +69,8 @@ function Form({ process, isLoading }: FormProps) {
           Choose employee:
           <EmployeeSelector
             departId={departId}
-            changeEmployeeId={setEmployeeId}
+            // @ts-ignore
+            changeEmployee={setEmployee}
           />
         </label>
       </div>
@@ -92,19 +98,28 @@ function Form({ process, isLoading }: FormProps) {
           </div>
         </label>
       </div>
-      <div className="column is-flex is-align-items-flex-end">
+      <div className="column is-flex is-justify-content-space-evenly is-align-items-flex-end">
         <button
           type="submit"
-          className={`button is-info is-fullwidth  ${
-            isLoading ? "is-loading" : ""
-          }`}
+          className={`${
+            supervisor ? "" : "is-hidden"
+          } button mr-1 is-fullwidth is-info ${isLoading ? "is-loading" : ""}`}
           disabled={isLoading}
+          value="screen"
         >
           GET
+        </button>
+        <button
+          type="submit"
+          className="button ml-1 is-fullwidth is-light"
+          disabled={isLoading}
+          value="email"
+        >
+          Send to email
         </button>
       </div>
     </form>
   );
 }
 
-export { Form };
+export default Form;

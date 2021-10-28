@@ -1,9 +1,11 @@
 import { stringify } from "qs";
 import type { departId, Entity, Employee, InActiveData } from "./types";
+import fetch from "cross-fetch";
 
 interface RawEmployee extends Employee {
   ACTIVE: boolean;
   LAST_NAME: string;
+  EMAIL: string;
 }
 
 const B24Config = {
@@ -48,9 +50,10 @@ async function getEmployees(depart: departId): Promise<Employee[]> {
     .then((rawEmployees: RawEmployee[]) => {
       return rawEmployees
         .filter((employee) => employee.ACTIVE)
-        .map(({ ID, NAME, LAST_NAME }) => ({
+        .map(({ ID, NAME, LAST_NAME, EMAIL }) => ({
           ID,
           NAME: `${NAME} ${LAST_NAME}`,
+          email: EMAIL,
         }));
     })
     .catch(() => []);

@@ -4,13 +4,10 @@ import type { departId, Employee } from "../types";
 
 type EmployeeSelectorProps = {
   departId?: departId;
-  changeEmployeeId: (id: string) => void;
+  changeEmployee: (employee: Employee) => void;
 };
 
-function EmployeeSelector({
-  departId,
-  changeEmployeeId,
-}: EmployeeSelectorProps) {
+function EmployeeSelector({ departId, changeEmployee }: EmployeeSelectorProps) {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,16 +26,19 @@ function EmployeeSelector({
         disabled={!departId}
         required
         id="employee"
-        onChange={({ target }: React.BaseSyntheticEvent) => {
-          changeEmployeeId((target as HTMLInputElement).value);
+        onChange={({ target: { value: id } }: React.BaseSyntheticEvent) => {
+          const employee = employees.find((empl) => empl.ID === id);
+          changeEmployee(employee as Employee);
         }}
       >
         <option></option>
-        {employees.map(({ ID, NAME }) => (
-          <option key={ID} value={ID}>
-            {NAME}
-          </option>
-        ))}
+        {employees.map(({ ID, NAME }) => {
+          return (
+            <option key={ID} value={ID}>
+              {NAME}
+            </option>
+          );
+        })}
       </select>
     </div>
   );

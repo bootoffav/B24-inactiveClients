@@ -1,19 +1,16 @@
-import React from "react";
-import { inActivityDataTypes } from "./helpers";
-
 export type departId = "8640" | "8496";
 
-export type AppState = "initial" | "started" | "finished";
+export type AppState = "initial" | "started" | "finished" | "emailed";
 
-export interface ProcessProps {
-  employeeId: string;
-  event: React.SyntheticEvent;
+export interface ProceedingProps {
+  id: string;
   inactivityPeriod: string;
 }
 
 export interface Employee {
   ID: string;
   NAME: string;
+  email: string;
 }
 
 export interface Activity {

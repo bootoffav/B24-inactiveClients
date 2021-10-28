@@ -43,7 +43,6 @@ function TabWithContent({
     [inActiveEntities, type]
   );
   const pageSize = 20;
-  // debugger;
   const {
     getTableProps,
     headerGroups,

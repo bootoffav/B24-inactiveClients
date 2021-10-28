@@ -31,4 +31,4 @@ function Result({ inActiveData }: ResultProps) {
   );
 }
 
-export { Result };
+export default Result;

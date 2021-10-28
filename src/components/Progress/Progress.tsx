@@ -32,4 +32,4 @@ function Progress({ current, total, type }: ProgressProps) {
   );
 }
 
-export { Progress };
+export default Progress;
