@@ -11,7 +11,9 @@ function findLatestActivity(activities: Activity[]): Activity {
   );
 }
 
-async function getCompanyContacts(companyId: string): Promise<string[]> {
+async function getCompanyContacts(
+  companyId: `${number}`
+): Promise<`${number}`[]> {
   return await getAllData(
     "crm.contact.list",
     {
@@ -27,14 +29,17 @@ async function getCompanyContacts(companyId: string): Promise<string[]> {
 }
 
 async function getLastActivity(
-  ownerId: string,
+  ownerId: `${number}`,
   type: keyof InActiveData
 ): Promise<Activity | undefined> {
-  const ownerTypeIdMap = {
-    company: 4,
-    contact: 3,
-    lead: 1,
+  const ownerTypeIdMap: {
+    [K in "company" | "contact" | "lead"]: `${1 | 3 | 4}`;
+  } = {
+    company: "4",
+    contact: "3",
+    lead: "1",
   };
+
   const allActivities = await getAllData(
     "crm.activity.list",
     {

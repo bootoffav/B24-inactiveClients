@@ -152,8 +152,8 @@ function TabWithContent({
 }
 
 function genRows(inActiveEntities: Entity[], type: keyof InActiveData) {
-  return inActiveEntities.map(({ ID, TITLE, lastActivity }) => ({
-    title: TITLE,
+  return inActiveEntities.map(({ id, title, lastActivity }) => ({
+    title,
     lastActivityDate: lastActivity?.LAST_UPDATED,
     activityType:
       lastActivity && lastActivity.PROVIDER_TYPE_ID !== null
@@ -161,7 +161,7 @@ function genRows(inActiveEntities: Entity[], type: keyof InActiveData) {
         : undefined,
     subject: lastActivity?.SUBJECT,
     payload: {
-      id: ID,
+      id,
       type,
       responsibleId: lastActivity?.RESPONSIBLE_ID,
       accossiateEntityId: lastActivity?.ASSOCIATED_ENTITY_ID,

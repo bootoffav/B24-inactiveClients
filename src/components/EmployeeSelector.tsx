@@ -27,15 +27,15 @@ function EmployeeSelector({ departId, changeEmployee }: EmployeeSelectorProps) {
         required
         id="employee"
         onChange={({ target: { value: id } }: React.BaseSyntheticEvent) => {
-          const employee = employees.find((empl) => empl.ID === id);
+          const employee = employees.find((empl) => empl.id === id);
           changeEmployee(employee as Employee);
         }}
       >
         <option></option>
-        {employees.map(({ ID, NAME }) => {
+        {employees.map(({ id, name }) => {
           return (
-            <option key={ID} value={ID}>
-              {NAME}
+            <option key={id} value={id}>
+              {name}
             </option>
           );
         })}

@@ -13,9 +13,10 @@ async function* processing({
 > {
   for (const type of inActivityDataTypes) {
     let inactiveEntities: Entity[] = [];
+
     const entities = await getEntities(
       type as keyof InActiveData & string,
-      employee.ID
+      employee.id
     );
     yield [type, [0, entities.length]];
 
@@ -24,8 +25,7 @@ async function* processing({
       yield [type, [index, entities.length]];
 
       await delay(); // to exclude hitting B24 endpoint limits
-      const lastActivity = await getLastActivity(entity.ID, type);
-
+      const lastActivity = await getLastActivity(entity.id, type);
       if (
         (lastActivity && isInActiveEntity(lastActivity, inactivityPeriod)) ||
         !lastActivity

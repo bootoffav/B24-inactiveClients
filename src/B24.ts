@@ -1,12 +1,13 @@
 import { stringify } from "qs";
-import type { departId, Entity, Employee, InActiveData } from "./types";
+import type {
+  departId,
+  Entity,
+  InActiveData,
+  RawEmployee,
+  Employee,
+  RawEntity,
+} from "./types";
 import fetch from "cross-fetch";
-
-interface RawEmployee extends Employee {
-  ACTIVE: boolean;
-  LAST_NAME: string;
-  EMAIL: string;
-}
 
 const B24Config = {
   hostname: process.env.REACT_APP_B24_HOSTNAME || "",
@@ -50,18 +51,23 @@ async function getEmployees(depart: departId): Promise<Employee[]> {
     .then((rawEmployees: RawEmployee[]) => {
       return rawEmployees
         .filter((employee) => employee.ACTIVE)
-        .map(({ ID, NAME, LAST_NAME, EMAIL }) => ({
-          ID,
-          NAME: `${NAME} ${LAST_NAME}`,
-          email: EMAIL,
+        .map(({ ID: id, NAME, LAST_NAME, EMAIL: email }) => ({
+          id,
+          name: `${NAME} ${LAST_NAME}`,
+          email,
         }));
     })
     .catch(() => []);
 }
 
+type ContactEntity = RawEntity & {
+  NAME: string | null;
+  LAST_NAME: string | null;
+};
+
 async function getEntities(
   type: keyof InActiveData & string,
-  responsibleId: string
+  responsibleId: `${number}`
 ): Promise<Entity[]> {
   const selectMap = {
     company: ["ID", "TITLE"],
@@ -73,24 +79,31 @@ async function getEntities(
     ORDER: { DATE_CREATE: "ASC" },
     FILTER: { ASSIGNED_BY_ID: responsibleId },
     SELECT: selectMap[type],
-  }).then((entities) => {
-    if (type === "contact") {
-      return entities.map(
-        (entity: Entity & { NAME: string; LAST_NAME: string }) => ({
-          ID: entity.ID,
-          TITLE: `${entity.NAME} ${entity.LAST_NAME}`,
-        })
-      );
-    }
-    return entities;
+  }).then((entities: RawEntity[]): Entity[] => {
+    return type === "contact"
+      ? (entities as ContactEntity[]).map(({ NAME, LAST_NAME, ...entity }) => ({
+          id: entity.ID,
+          title: `${NAME ?? ""}${LAST_NAME ? ` ${LAST_NAME}` : ""}`,
+        }))
+      : entities.map((entity) => ({ id: entity.ID, title: entity.TITLE }));
   });
 }
+
+type Filter = {
+  [Prop in
+    | "ID"
+    | "UF_DEPARTMENT"
+    | "ASSIGNED_BY_ID"
+    | "COMPANY_ID"
+    | "OWNER_TYPE_ID"
+    | "OWNER_ID"]?: `${number}`;
+};
 
 async function getAllData(
   method: string,
   body: {
     ORDER?: {};
-    FILTER?: {};
+    FILTER?: Filter;
     SELECT?: string[];
   },
   runOnce: boolean = false // for last activity

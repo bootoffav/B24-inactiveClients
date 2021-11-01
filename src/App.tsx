@@ -46,7 +46,7 @@ function App() {
                       method: "post",
                       body: stringify({
                         inactivityPeriod,
-                        id: employee.ID,
+                        id: employee.id,
                         email: employee.email,
                       }),
                     }
