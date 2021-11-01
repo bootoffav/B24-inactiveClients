@@ -2,10 +2,12 @@ export type departId = "8640" | "8496";
 
 export type AppState = "initial" | "started" | "finished" | "emailed";
 
-export interface ProceedingProps {
-  id: string;
+export interface ProcessingProps {
+  employee: Employee;
   inactivityPeriod: string;
 }
+
+export type Output = "screen" | "email";
 
 export interface Employee {
   ID: string;

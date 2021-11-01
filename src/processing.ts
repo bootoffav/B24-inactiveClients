@@ -1,19 +1,22 @@
 import { delay, isInActiveEntity, inActivityDataTypes } from "./helpers";
 import { getEntities } from "./B24";
 import { getLastActivity } from "./lastActivity";
-import { ProceedingProps, InActiveData, Entity, ProgressTuple } from "./types";
+import { ProcessingProps, InActiveData, Entity, ProgressTuple } from "./types";
 
-async function* proceeding({
-  id,
+async function* processing({
+  employee,
   inactivityPeriod,
-}: ProceedingProps): AsyncGenerator<
+}: ProcessingProps): AsyncGenerator<
   [keyof InActiveData & string, Entity[] | ProgressTuple],
   any,
   void
 > {
   for (const type of inActivityDataTypes) {
     let inactiveEntities: Entity[] = [];
-    const entities = await getEntities(type as keyof InActiveData & string, id);
+    const entities = await getEntities(
+      type as keyof InActiveData & string,
+      employee.ID
+    );
     yield [type, [0, entities.length]];
 
     let index = 1;
@@ -38,4 +41,4 @@ async function* proceeding({
   }
 }
 
-export default proceeding;
+export default processing;

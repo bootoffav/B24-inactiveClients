@@ -2,7 +2,6 @@ function SentEmail({ email }: { email?: string }) {
   return (
     <section className="container">
       <div className="notification is-success is-light">
-        {/* <button className="delete"></button> */}
         <p className="is-size-3">
           <strong>Hooray! &#127881;</strong>
         </p>

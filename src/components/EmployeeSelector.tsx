@@ -12,13 +12,13 @@ function EmployeeSelector({ departId, changeEmployee }: EmployeeSelectorProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    departId &&
-      (async () => {
-        setIsLoading(true);
-        setEmployees(await getEmployees(departId));
-        setIsLoading(false);
-      })();
-  }, [departId]);
+    if (departId) {
+      setIsLoading(true);
+      getEmployees(departId)
+        .then(setEmployees)
+        .finally(() => setIsLoading(false));
+    }
+  }, [departId, setIsLoading]);
 
   return (
     <div className={`select is-fullwidth ${isLoading ? "is-loading" : ""}`}>

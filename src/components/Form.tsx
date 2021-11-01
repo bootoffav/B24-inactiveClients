@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
-import { departId, Employee } from "../types";
+import { departId, Employee, ProcessingProps, Output } from "../types";
 import { Department, getDepartments } from "../B24";
 import netlifyIdentity from "netlify-identity-widget";
 
 type FormProps = {
-  process: any;
+  process: (props: ProcessingProps & { output: Output }) => Promise<void>;
   isLoading: boolean;
 };
 
@@ -29,12 +29,17 @@ function Form({ process, isLoading }: FormProps) {
       className="columns"
       onSubmit={(event) => {
         event.preventDefault();
-        const output = (event.nativeEvent as any).submitter.value;
-        process({
-          output,
-          employee,
-          inactivityPeriod,
-        });
+        const { nativeEvent } = event;
+        const output: Output = (
+          (nativeEvent as SubmitEvent).submitter! as HTMLButtonElement
+        ).value as Output;
+        if (employee) {
+          process({
+            output,
+            employee,
+            inactivityPeriod,
+          });
+        }
       }}
     >
       <div className="column">

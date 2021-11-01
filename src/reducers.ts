@@ -7,26 +7,30 @@ function inActiveReducer(
   return { ...state, [type]: payload };
 }
 
-const initProgressState = {
-  company: {},
-  contact: {},
-  lead: {},
+type initProgressStateType = {
+  [K in keyof InActiveData]: { current: number; total: number };
+};
+
+const initProgressState: initProgressStateType = {
+  company: { current: 0, total: 0 },
+  contact: { current: 0, total: 0 },
+  lead: { current: 0, total: 0 },
 };
 
 type inactiveReducerProps = {
-  type: keyof InActiveData;
-  payload: Entity[];
+  readonly type: keyof InActiveData;
+  readonly payload: Entity[];
 };
 
 type ProgressReducerProps = {
-  type: keyof InActiveData | "reset";
-  payload: ProgressTuple;
+  readonly type: inactiveReducerProps["type"] | "reset";
+  readonly payload: ProgressTuple;
 };
 
 function progressReducer(
-  state: any,
+  state: typeof initProgressState,
   { type, payload: [current, total] }: ProgressReducerProps
-) {
+): typeof initProgressState {
   switch (type) {
     case "reset":
       return initProgressState;

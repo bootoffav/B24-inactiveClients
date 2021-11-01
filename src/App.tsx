@@ -5,7 +5,7 @@ import SentEmail from "./components/SentEmail/SentEmail";
 import Result from "./components/Result/Result";
 import { AppState, Entity, InActiveData, ProgressTuple } from "./types";
 import { inActivityDataTypes } from "./helpers";
-import proceeding from "./proceeding";
+import processing from "./processing";
 import {
   inActiveReducer,
   progressReducer,
@@ -36,7 +36,7 @@ function App() {
             of time
           </p>
           <Form
-            process={async ({ output, employee, inactivityPeriod }: any) => {
+            process={async ({ output, employee, inactivityPeriod }) => {
               switch (output) {
                 case "email":
                   fetch(
@@ -59,8 +59,8 @@ function App() {
                   setAppState("started");
                   dispatchProgressReducer({ type: "reset", payload: [0, 0] });
 
-                  for await (const [type, payload] of proceeding({
-                    id: employee.id,
+                  for await (const [type, payload] of processing({
+                    employee,
                     inactivityPeriod,
                   })) {
                     if (
