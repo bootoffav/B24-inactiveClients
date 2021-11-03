@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react";
 import Form from "./components/Form";
 import Progress from "./components/Progress/Progress";
-import SentEmail from "./components/SentEmail/SentEmail";
+import SentEmail from "./components/SentEmail";
 import Result from "./components/Result/Result";
 import { AppState, Entity, InActiveData, ProgressTuple } from "./types";
 import { inActivityDataTypes } from "./helpers";
@@ -11,8 +11,9 @@ import {
   progressReducer,
   initProgressState,
 } from "./reducers";
-import { stringify } from "querystring";
 import { useAuth0 } from "@auth0/auth0-react";
+import { stringify } from "qs";
+import LoadingUserData from "./components/LoadingUserData";
 
 function App() {
   const [state, setAppState] = useState<AppState>("initial");
@@ -31,7 +32,7 @@ function App() {
   const { loginWithRedirect, isAuthenticated, isLoading, logout } = useAuth0();
 
   if (isLoading) {
-    return <div>loading...</div>;
+    return <LoadingUserData />;
   }
 
   return isAuthenticated ? (
