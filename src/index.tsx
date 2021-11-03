@@ -1,29 +1,20 @@
+// @ts-nocheck
 import React from "react";
 import ReactDOM from "react-dom";
 import "bulma";
-import netlifyIdentity from "netlify-identity-widget";
+import { Auth0Provider } from "@auth0/auth0-react";
 import "./styles.scss";
 import App from "./App";
 
-netlifyIdentity.init();
-
-netlifyIdentity.on("login", () => {
-  netlifyIdentity.close();
-  ReactDOM.render(
-    <React.StrictMode>
+ReactDOM.render(
+  <React.StrictMode>
+    <Auth0Provider
+      domain={process.env.REACT_APP_AUTH0_DOMAIN ?? ""}
+      clientId={process.env.REACT_APP_AUTH0_CLIENT_ID ?? ""}
+      redirectUri={window.location.origin}
+    >
       <App />
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-});
-
-if (!netlifyIdentity.currentUser()) {
-  netlifyIdentity.open();
-} else {
-  ReactDOM.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
-    document.getElementById("root")
-  );
-}
+    </Auth0Provider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);

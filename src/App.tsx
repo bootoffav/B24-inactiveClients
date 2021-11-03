@@ -12,6 +12,7 @@ import {
   initProgressState,
 } from "./reducers";
 import { stringify } from "querystring";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
   const [state, setAppState] = useState<AppState>("initial");
@@ -27,14 +28,31 @@ function App() {
     initProgressState
   );
 
-  return (
+  const { loginWithRedirect, isAuthenticated, isLoading, logout } = useAuth0();
+
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
+
+  return isAuthenticated ? (
     <main className="is-0">
       <div className="main-menu">
         <section className="container mb-4">
-          <p className="is-size-4 has-text-centered">
-            APP shows inactive clients in Bitrix24 CRM within specified period
-            of time
-          </p>
+          <div className="columns is-gapless" style={{ height: "20px" }}>
+            {/* TODO: FIX height in CSS styles */}
+            <div className="column is-size-4 has-text-centered">
+              APP shows inactive clients in Bitrix24 CRM within specified period
+              of time
+            </div>
+            <div className="column is-1">
+              <button
+                className="button is-ghost"
+                onClick={() => logout({ returnTo: window.location.origin })}
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
           <Form
             process={async ({ output, employee, inactivityPeriod }) => {
               switch (output) {
@@ -99,6 +117,8 @@ function App() {
         {state === "emailed" && <SentEmail email={emailWhereToBeSent} />}
       </div>
     </main>
+  ) : (
+    loginWithRedirect()
   );
 }
 

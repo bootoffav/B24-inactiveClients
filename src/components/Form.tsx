@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
 import { departId, Employee, ProcessingProps, Output } from "../types";
 import { Department, getDepartments } from "../B24";
-import netlifyIdentity from "netlify-identity-widget";
+// import { useAuth0 } from "@auth0/auth0-react";
 
 type FormProps = {
   process: (props: ProcessingProps & { output: Output }) => Promise<void>;
@@ -15,8 +15,8 @@ function Form({ process, isLoading }: FormProps) {
   const [inactivityPeriod, setInactivityPeriod] = useState<string>("6 month");
   const [departments, setDepartments] = useState<Department[]>([]);
 
-  const supervisor =
-    netlifyIdentity.currentUser()?.email !== "inactiveclients@xmtextiles.eu";
+  // const { user } = useAuth0();
+  // console.log(user);
   useEffect(() => {
     (async () => {
       setDepartments(await getDepartments());
@@ -106,22 +106,22 @@ function Form({ process, isLoading }: FormProps) {
       <div className="column is-flex is-justify-content-space-evenly is-align-items-flex-end">
         <button
           type="submit"
-          className={`${
-            supervisor ? "" : "is-hidden"
-          } button mr-1 is-fullwidth is-info ${isLoading ? "is-loading" : ""}`}
+          className={`button mr-1 is-fullwidth is-info ${
+            isLoading ? "is-loading" : ""
+          }`}
           disabled={isLoading}
           value="screen"
         >
           GET
         </button>
-        <button
+        {/* <button
           type="submit"
           className="button ml-1 is-fullwidth is-light"
           disabled={isLoading}
           value="email"
         >
           Send to email
-        </button>
+        </button> */}
       </div>
     </form>
   );
