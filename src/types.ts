@@ -7,6 +7,7 @@ export interface ProcessingProps {
   readonly inactivityPeriod: string;
 }
 
+export type CorporateEmail = `${string}@xmtextiles.${"com" | "eu"}`;
 export type Output = "screen" | "email";
 
 export type RawEmployee = {

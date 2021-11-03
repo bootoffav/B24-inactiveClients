@@ -1,24 +1,38 @@
 import { getEmployees } from "../B24";
 import { useState, useEffect } from "react";
-import type { departId, Employee } from "../types";
+import type { departId, Employee, CorporateEmail } from "../types";
 
 type EmployeeSelectorProps = {
   departId?: departId;
+  singleUser?: CorporateEmail;
   changeEmployee: (employee: Employee) => void;
 };
 
-function EmployeeSelector({ departId, changeEmployee }: EmployeeSelectorProps) {
+function EmployeeSelector({
+  departId,
+  singleUser,
+  changeEmployee,
+}: EmployeeSelectorProps) {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (departId) {
       setIsLoading(true);
-      getEmployees(departId)
+      getEmployees({ value: departId, type: "manager" })
+        .then(setEmployees)
+        .finally(() => setIsLoading(false));
+    } else if (singleUser) {
+      setIsLoading(true);
+      getEmployees({ value: singleUser, type: "employee" })
+        .then((employees) => {
+          changeEmployee(employees[0]);
+          return employees;
+        })
         .then(setEmployees)
         .finally(() => setIsLoading(false));
     }
-  }, [departId, setIsLoading]);
+  }, [departId, singleUser, changeEmployee, setIsLoading]);
 
   return (
     <div className={`select is-fullwidth ${isLoading ? "is-loading" : ""}`}>
@@ -30,6 +44,7 @@ function EmployeeSelector({ departId, changeEmployee }: EmployeeSelectorProps) {
           const employee = employees.find((empl) => empl.id === id);
           changeEmployee(employee as Employee);
         }}
+        value={employees.length === 1 ? employees[0].id : undefined}
       >
         <option></option>
         {employees.map(({ id, name }) => {

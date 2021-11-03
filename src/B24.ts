@@ -6,6 +6,7 @@ import type {
   RawEmployee,
   Employee,
   RawEntity,
+  CorporateEmail,
 } from "./types";
 import fetch from "cross-fetch";
 
@@ -44,9 +45,16 @@ async function getDepartments(
   return departments;
 }
 
-async function getEmployees(depart: departId): Promise<Employee[]> {
+async function getEmployees({
+  value,
+  type,
+}: {
+  value: departId | CorporateEmail;
+  type: "manager" | "employee";
+}): Promise<Employee[]> {
+  const FILTER = { [type === "manager" ? "UF_DEPARTMENT" : "EMAIL"]: value };
   return await getAllData("user.get", {
-    FILTER: { UF_DEPARTMENT: depart },
+    FILTER,
   })
     .then((rawEmployees: RawEmployee[]) => {
       return rawEmployees
@@ -93,6 +101,7 @@ type Filter = {
   [Prop in
     | "ID"
     | "UF_DEPARTMENT"
+    | "EMAIL"
     | "ASSIGNED_BY_ID"
     | "COMPANY_ID"
     | "OWNER_TYPE_ID"

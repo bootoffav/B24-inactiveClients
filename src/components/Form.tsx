@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
-import { departId, Employee, ProcessingProps, Output } from "../types";
+import {
+  departId,
+  Employee,
+  ProcessingProps,
+  Output,
+  CorporateEmail,
+} from "../types";
 import { Department, getDepartments } from "../B24";
-// import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 type FormProps = {
   process: (props: ProcessingProps & { output: Output }) => Promise<void>;
   isLoading: boolean;
 };
+
+const ManagerEmails = JSON.parse(process.env.REACT_APP_MANAGERS ?? "");
 
 function Form({ process, isLoading }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
@@ -15,13 +23,19 @@ function Form({ process, isLoading }: FormProps) {
   const [inactivityPeriod, setInactivityPeriod] = useState<string>("6 month");
   const [departments, setDepartments] = useState<Department[]>([]);
 
-  // const { user } = useAuth0();
-  // console.log(user);
+  const { user } = useAuth0();
+
   useEffect(() => {
     (async () => {
       setDepartments(await getDepartments());
     })();
   }, []);
+
+  const isManager = (): boolean => {
+    return !!ManagerEmails.find(
+      (email: CorporateEmail) => email === user?.email
+    );
+  };
 
   return (
     <form
@@ -42,39 +56,43 @@ function Form({ process, isLoading }: FormProps) {
         }
       }}
     >
-      <div className="column">
-        <label htmlFor="department" aria-label="department">
-          Choose department:
-          <div
-            className={`select is-fullwidth ${
-              departments.length ? "" : "is-loading"
-            }
-          `}
-          >
-            <select
-              className="is-focused"
-              required
-              id="department"
-              onChange={({ target }: React.BaseSyntheticEvent) =>
-                setDepartId((target as HTMLInputElement).value as departId)
+      {isManager() && (
+        <div className={`column`}>
+          <label htmlFor="department" aria-label="department">
+            Choose department:
+            <div
+              className={`select is-fullwidth ${
+                departments.length ? "" : "is-loading"
               }
+          `}
             >
-              <option></option>
-              {departments.map(({ name, id }) => (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </label>
-      </div>
+              <select
+                className="is-focused"
+                required
+                id="department"
+                onChange={({ target }: React.BaseSyntheticEvent) =>
+                  setDepartId((target as HTMLInputElement).value as departId)
+                }
+              >
+                <option></option>
+                {departments.map(({ name, id }) => (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </label>
+        </div>
+      )}
       <div className="column">
         <label htmlFor="employee" aria-label="employee">
           Choose employee:
           <EmployeeSelector
             departId={departId}
-            // @ts-ignore
+            singleUser={
+              isManager() ? undefined : (user?.email as CorporateEmail)
+            }
             changeEmployee={setEmployee}
           />
         </label>
