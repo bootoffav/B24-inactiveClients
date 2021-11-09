@@ -1,6 +1,11 @@
 export type departId = `${number}`;
 
-export type AppState = "initial" | "started" | "finished" | "emailed";
+export type AppState =
+  | "initial"
+  | "started"
+  | "finished"
+  | "emailed"
+  | "aborted";
 
 export interface ProcessingProps {
   readonly employee: Employee;

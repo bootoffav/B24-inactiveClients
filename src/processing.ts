@@ -7,9 +7,7 @@ async function* processing({
   employee,
   inactivityPeriod,
 }: ProcessingProps): AsyncGenerator<
-  [keyof InActiveData & string, Entity[] | ProgressTuple],
-  any,
-  void
+  [keyof InActiveData & string, Entity[] | ProgressTuple]
 > {
   for (const type of inActivityDataTypes) {
     let inactiveEntities: Entity[] = [];

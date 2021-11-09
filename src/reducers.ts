@@ -4,11 +4,22 @@ function inActiveReducer(
   state: InActiveData,
   { type, payload }: inactiveReducerProps
 ) {
-  return { ...state, [type]: payload };
+  switch (type) {
+    case "reset":
+      return { ...initInactiveState };
+    default:
+      return { ...state, [type]: payload };
+  }
 }
 
 type initProgressStateType = {
   [K in keyof InActiveData]: { current: number; total: number };
+};
+
+const initInactiveState = {
+  company: [],
+  contact: [],
+  lead: [],
 };
 
 const initProgressState: initProgressStateType = {
@@ -18,12 +29,12 @@ const initProgressState: initProgressStateType = {
 };
 
 type inactiveReducerProps = {
-  readonly type: keyof InActiveData;
+  readonly type: (keyof InActiveData & string) | "reset";
   readonly payload: Entity[];
 };
 
 type ProgressReducerProps = {
-  readonly type: inactiveReducerProps["type"] | "reset";
+  readonly type: inactiveReducerProps["type"];
   readonly payload: ProgressTuple;
 };
 
@@ -33,7 +44,7 @@ function progressReducer(
 ): typeof initProgressState {
   switch (type) {
     case "reset":
-      return initProgressState;
+      return { ...initProgressState };
     default:
       return {
         ...state,
@@ -45,4 +56,9 @@ function progressReducer(
   }
 }
 
-export { inActiveReducer, progressReducer, initProgressState };
+export {
+  inActiveReducer,
+  progressReducer,
+  initProgressState,
+  initInactiveState,
+};

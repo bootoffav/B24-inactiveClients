@@ -2,6 +2,7 @@ import { useReducer, useState } from "react";
 import Form from "./components/Form";
 import Progress from "./components/Progress/Progress";
 import SentEmail from "./components/SentEmail";
+import Abort from "./components/Abort";
 import Result from "./components/Result/Result";
 import { AppState, Entity, InActiveData, ProgressTuple } from "./types";
 import { inActivityDataTypes } from "./helpers";
@@ -10,19 +11,19 @@ import {
   inActiveReducer,
   progressReducer,
   initProgressState,
+  initInactiveState,
 } from "./reducers";
 import { useAuth0 } from "@auth0/auth0-react";
 import { stringify } from "qs";
 import LoadingUserData from "./components/LoadingUserData";
 
 function App() {
-  const [state, setAppState] = useState<AppState>("initial");
+  const [appState, setAppState] = useState<AppState>("initial");
   const [emailWhereToBeSent, setEmailWhereToBeSent] = useState<string>();
-  const [inActiveData, dispatchInActiveReducer] = useReducer(inActiveReducer, {
-    company: [],
-    contact: [],
-    lead: [],
-  });
+  const [inActiveData, dispatchInActiveReducer] = useReducer(
+    inActiveReducer,
+    initInactiveState
+  );
 
   const [progressState, dispatchProgressReducer] = useReducer(
     progressReducer,
@@ -34,6 +35,49 @@ function App() {
   if (isLoading) {
     return <LoadingUserData />;
   }
+
+  // @ts-ignore
+  const process = async ({ output, employee, inactivityPeriod }) => {
+    switch (output) {
+      case "email":
+        fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
+          mode: "no-cors", // todo
+          method: "post",
+          body: stringify({
+            inactivityPeriod,
+            id: employee.id,
+            email: employee.email,
+          }),
+        }).then(() => {
+          setEmailWhereToBeSent(employee.email);
+          setAppState("emailed");
+        });
+        break;
+      case "screen":
+        setAppState("started");
+
+        for await (const [type, payload] of processing({
+          employee,
+          inactivityPeriod,
+        })) {
+          if (
+            typeof payload[0] === "number" &&
+            typeof payload[1] === "number"
+          ) {
+            dispatchProgressReducer({
+              type,
+              payload: payload as ProgressTuple,
+            });
+          } else {
+            dispatchInActiveReducer({
+              type,
+              payload: payload as Entity[],
+            });
+          }
+        }
+        setAppState("finished");
+    }
+  };
 
   return isAuthenticated ? (
     <main className="is-0">
@@ -55,57 +99,21 @@ function App() {
             </div>
           </div>
           <Form
-            process={async ({ output, employee, inactivityPeriod }) => {
-              switch (output) {
-                case "email":
-                  fetch(
-                    `http://localhost:9999/.netlify/functions/sendEmail-background`,
-                    {
-                      mode: "no-cors", // todo
-                      method: "post",
-                      body: stringify({
-                        inactivityPeriod,
-                        id: employee.id,
-                        email: employee.email,
-                      }),
-                    }
-                  ).then(() => {
-                    setEmailWhereToBeSent(employee.email);
-                    setAppState("emailed");
-                  });
-                  break;
-                case "screen":
-                  setAppState("started");
-                  dispatchProgressReducer({ type: "reset", payload: [0, 0] });
-
-                  for await (const [type, payload] of processing({
-                    employee,
-                    inactivityPeriod,
-                  })) {
-                    if (
-                      typeof payload[0] === "number" &&
-                      typeof payload[1] === "number"
-                    ) {
-                      dispatchProgressReducer({
-                        type,
-                        payload: payload as ProgressTuple,
-                      });
-                    } else {
-                      dispatchInActiveReducer({
-                        type,
-                        payload: payload as Entity[],
-                      });
-                    }
-                  }
-                  setAppState("finished");
-              }
+            process={process}
+            isLoading={appState === "started"}
+            abort={() => {
+              setAppState("aborted");
+              dispatchProgressReducer({ type: "reset", payload: [0, 0] });
+              dispatchInActiveReducer({
+                type: "reset",
+                payload: [],
+              });
             }}
-            isLoading={state === "started"}
           />
         </section>
       </div>
       <div className="result-menu">
-        {state === "started" &&
+        {appState === "started" &&
           inActivityDataTypes.map((type: keyof InActiveData) => (
             <Progress
               key={type}
@@ -114,8 +122,9 @@ function App() {
               type={type}
             />
           ))}
-        {state === "finished" && <Result inActiveData={inActiveData} />}
-        {state === "emailed" && <SentEmail email={emailWhereToBeSent} />}
+        {appState === "finished" && <Result inActiveData={inActiveData} />}
+        {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />}
+        {appState === "aborted" && <Abort />}
       </div>
     </main>
   ) : (

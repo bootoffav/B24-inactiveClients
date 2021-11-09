@@ -13,15 +13,17 @@ import { useAuth0 } from "@auth0/auth0-react";
 type FormProps = {
   process: (props: ProcessingProps & { output: Output }) => Promise<void>;
   isLoading: boolean;
+  abort: () => void;
 };
 
 const ManagerEmails = JSON.parse(process.env.REACT_APP_MANAGERS ?? "");
 
-function Form({ process, isLoading }: FormProps) {
+function Form({ process, isLoading, abort }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
   const [employee, setEmployee] = useState<Employee>();
   const [inactivityPeriod, setInactivityPeriod] = useState<string>("6 month");
   const [departments, setDepartments] = useState<Department[]>([]);
+  const [started, setStarted] = useState<boolean>(false);
 
   const { user } = useAuth0();
 
@@ -43,6 +45,7 @@ function Form({ process, isLoading }: FormProps) {
       className="columns"
       onSubmit={(event) => {
         event.preventDefault();
+        setStarted(true);
         const { nativeEvent } = event;
         const output: Output = (
           (nativeEvent as SubmitEvent).submitter! as HTMLButtonElement
@@ -121,28 +124,48 @@ function Form({ process, isLoading }: FormProps) {
           </div>
         </label>
       </div>
+
       <div className="column is-flex is-justify-content-space-evenly is-align-items-flex-end">
-        <button
-          type="submit"
-          className={`button mr-1 is-fullwidth is-info ${
-            isLoading ? "is-loading" : ""
-          }`}
-          disabled={isLoading}
-          value="screen"
-        >
-          GET
-        </button>
-        {/* <button
-          type="submit"
-          className="button ml-1 is-fullwidth is-light"
-          disabled={isLoading}
-          value="email"
-        >
-          Send to email
-        </button> */}
+        {!started && (
+          <button
+            type="submit"
+            className={`button mr-1 is-fullwidth is-info ${
+              isLoading ? "is-loading" : ""
+            }`}
+            disabled={isLoading}
+            value="screen"
+          >
+            Get
+          </button>
+        )}
+        {started && (
+          <div className="buttons has-addons">
+            <button className="button is-info is-loading"></button>
+            <button
+              className="button is-info"
+              onClick={() => {
+                abort();
+                setStarted(false);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
     </form>
   );
 }
 
 export default Form;
+
+{
+  /* <button
+          type="submit"
+          className="button ml-1 is-fullwidth is-light"
+          disabled={isLoading}
+          value="email"
+        >
+          Send to email
+        </button> */
+}
