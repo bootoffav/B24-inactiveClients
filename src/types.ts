@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    aborted: boolean;
+  }
+}
+
 export type departId = `${number}`;
 
 export type AppState =

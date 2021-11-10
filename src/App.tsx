@@ -60,6 +60,9 @@ function App() {
           employee,
           inactivityPeriod,
         })) {
+          if (window.aborted)
+            return Promise.resolve(void (window.aborted = false));
+
           if (
             typeof payload[0] === "number" &&
             typeof payload[1] === "number"
@@ -108,6 +111,7 @@ function App() {
                 type: "reset",
                 payload: [],
               });
+              window.aborted = true;
             }}
           />
         </section>
