@@ -4,14 +4,14 @@ import {
   departId,
   Employee,
   ProcessingProps,
-  Output,
+  // Output,
   CorporateEmail,
 } from "../types";
 import { Department, getDepartments } from "../B24";
 import { useAuth0 } from "@auth0/auth0-react";
 
 type FormProps = {
-  process: (props: ProcessingProps & { output: Output }) => Promise<void>;
+  process: (props: ProcessingProps) => Promise<void>;
   isLoading: boolean;
   abort: () => void;
 };
@@ -44,15 +44,12 @@ function Form({ process, isLoading, abort }: FormProps) {
       method="post"
       className="columns"
       onSubmit={(event) => {
+        debugger;
         event.preventDefault();
         setStarted(true);
-        const { nativeEvent } = event;
-        const output: Output = (
-          (nativeEvent as SubmitEvent).submitter! as HTMLButtonElement
-        ).value as Output;
+        // const { nativeEvent } = event;
         if (employee) {
           process({
-            output,
             employee,
             inactivityPeriod,
           }).finally(() => setStarted(false));
@@ -133,7 +130,6 @@ function Form({ process, isLoading, abort }: FormProps) {
               isLoading ? "is-loading" : ""
             }`}
             disabled={isLoading}
-            value="screen"
           >
             Get
           </button>

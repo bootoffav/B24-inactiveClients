@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react";
 import Form from "./components/Form";
 import Progress from "./components/Progress/Progress";
-import SentEmail from "./components/SentEmail";
+// import SentEmail from "./components/SentEmail";
 import Abort from "./components/Abort";
 import Result from "./components/Result/Result";
 import { AppState, Entity, InActiveData, ProgressTuple } from "./types";
@@ -14,12 +14,12 @@ import {
   initInactiveState,
 } from "./reducers";
 import { useAuth0 } from "@auth0/auth0-react";
-import { stringify } from "qs";
+// import { stringify } from "qs";
 import LoadingUserData from "./components/LoadingUserData";
 
 function App() {
   const [appState, setAppState] = useState<AppState>("initial");
-  const [emailWhereToBeSent, setEmailWhereToBeSent] = useState<string>();
+  // const [emailWhereToBeSent, setEmailWhereToBeSent] = useState<string>();
   const [inActiveData, dispatchInActiveReducer] = useReducer(
     inActiveReducer,
     initInactiveState
@@ -37,49 +37,40 @@ function App() {
   }
 
   // @ts-ignore
-  const process = async ({ output, employee, inactivityPeriod }) => {
-    switch (output) {
-      case "email":
-        fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
-          mode: "no-cors", // todo
-          method: "post",
-          body: stringify({
-            inactivityPeriod,
-            id: employee.id,
-            email: employee.email,
-          }),
-        }).then(() => {
-          setEmailWhereToBeSent(employee.email);
-          setAppState("emailed");
+  const process = async ({ employee, inactivityPeriod }) => {
+    // fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
+    //   mode: "no-cors", // todo
+    //   method: "post",
+    //   body: stringify({
+    //     inactivityPeriod,
+    //     id: employee.id,
+    //     email: employee.email,
+    //   }),
+    // }).then(() => {
+    //   setEmailWhereToBeSent(employee.email);
+    //   setAppState("emailed");
+    // });
+    setAppState("started");
+
+    for await (const [type, payload] of processing({
+      employee,
+      inactivityPeriod,
+    })) {
+      if (window.aborted) return Promise.resolve(void (window.aborted = false));
+
+      if (typeof payload[0] === "number" && typeof payload[1] === "number") {
+        dispatchProgressReducer({
+          type,
+          payload: payload as ProgressTuple,
         });
-        break;
-      case "screen":
-        setAppState("started");
-
-        for await (const [type, payload] of processing({
-          employee,
-          inactivityPeriod,
-        })) {
-          if (window.aborted)
-            return Promise.resolve(void (window.aborted = false));
-
-          if (
-            typeof payload[0] === "number" &&
-            typeof payload[1] === "number"
-          ) {
-            dispatchProgressReducer({
-              type,
-              payload: payload as ProgressTuple,
-            });
-          } else {
-            dispatchInActiveReducer({
-              type,
-              payload: payload as Entity[],
-            });
-          }
-        }
-        setAppState("finished");
+      } else {
+        dispatchInActiveReducer({
+          type,
+          payload: payload as Entity[],
+        });
+      }
     }
+    setAppState("finished");
   };
 
   return isAuthenticated ? (
@@ -127,7 +118,7 @@ function App() {
             />
           ))}
         {appState === "finished" && <Result inActiveData={inActiveData} />}
-        {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />}
+        {/* {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />} */}
         {appState === "aborted" && <Abort />}
       </div>
     </main>
