@@ -159,8 +159,7 @@ function Form({ process, isLoading, abort }: FormProps) {
 
 export default Form;
 
-{
-  /* <button
+/* <button
           type="submit"
           className="button ml-1 is-fullwidth is-light"
           disabled={isLoading}
@@ -168,4 +167,3 @@ export default Form;
         >
           Send to email
         </button> */
-}
