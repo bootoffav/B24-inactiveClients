@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
-import {
-  departId,
-  Employee,
-  ProcessingProps,
-  // Output,
-  CorporateEmail,
-} from "../types";
+import { departId, Employee, ProcessingProps, CorporateEmail } from "../types";
 import { Department, getDepartments } from "../B24";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -44,10 +38,8 @@ function Form({ process, isLoading, abort }: FormProps) {
       method="post"
       className="columns"
       onSubmit={(event) => {
-        debugger;
         event.preventDefault();
         setStarted(true);
-        // const { nativeEvent } = event;
         if (employee) {
           process({
             employee,
