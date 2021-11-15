@@ -70,6 +70,7 @@ function App() {
         });
       }
     }
+    dispatchProgressReducer({ type: "reset", payload: [0, 0] });
     setAppState("finished");
   };
 
