@@ -3,6 +3,7 @@ import { EmployeeSelector } from "./EmployeeSelector";
 import { departId, Employee, ProcessingProps, CorporateEmail } from "../types";
 import { Department, getDepartments } from "../B24";
 import { useAuth0 } from "@auth0/auth0-react";
+import { CompanyStatus } from "./CompanyStatus";
 
 type FormProps = {
   process: (props: ProcessingProps) => Promise<void>;
@@ -12,12 +13,24 @@ type FormProps = {
 
 const ManagerEmails = JSON.parse(process.env.REACT_APP_MANAGERS ?? "");
 
+const COMPANY_STATUS = {
+  1257: "Potential",
+  1259: "Working",
+  1261: "Not working",
+} as const;
+
 function Form({ process, isLoading, abort }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
   const [employee, setEmployee] = useState<Employee>();
   const [inactivityPeriod, setInactivityPeriod] = useState<string>("6 month");
   const [departments, setDepartments] = useState<Department[]>([]);
   const [started, setStarted] = useState<boolean>(false);
+  const [companyStatuses, setCompanyStatuses] = useState(
+    Object.entries(COMPANY_STATUS).map(([id, status]) => ({
+      status,
+      id,
+    }))
+  );
 
   const { user } = useAuth0();
 
@@ -36,7 +49,7 @@ function Form({ process, isLoading, abort }: FormProps) {
   return (
     <form
       method="post"
-      className="columns"
+      className="columns is-variable is-1"
       onSubmit={(event) => {
         event.preventDefault();
         setStarted(true);
@@ -49,7 +62,7 @@ function Form({ process, isLoading, abort }: FormProps) {
       }}
     >
       {isManager() && (
-        <div className={`column`}>
+        <div className={`column is-2`}>
           <label htmlFor="department" aria-label="department">
             Choose department:
             <div
@@ -77,7 +90,7 @@ function Form({ process, isLoading, abort }: FormProps) {
           </label>
         </div>
       )}
-      <div className="column">
+      <div className="column is-2">
         <label htmlFor="employee" aria-label="employee">
           Choose employee:
           <EmployeeSelector
@@ -89,13 +102,14 @@ function Form({ process, isLoading, abort }: FormProps) {
           />
         </label>
       </div>
-      <div className="column">
-        <label htmlFor="inactivePeriod" aria-label="inactive period">
+      <div className="column is-2">
+        <label
+          htmlFor="inactivePeriod"
+          aria-label="inactive period"
+          data-tooltip="Choose time period for which clients have not been contacted by the employee"
+        >
           Inactive period:
-          <div
-            data-tooltip="Choose time period for which clients have not been contacted by the employee"
-            className="select is-fullwidth"
-          >
+          <div className="select is-fullwidth">
             <select
               required
               id="inactivePeriod"
@@ -113,8 +127,10 @@ function Form({ process, isLoading, abort }: FormProps) {
           </div>
         </label>
       </div>
-
-      <div className="column is-flex is-justify-content-space-evenly is-align-items-flex-end">
+      <div className="column">
+        <CompanyStatus options={companyStatuses} />
+      </div>
+      <div className="column is-2 is-flex is-justify-content-space-evenly is-align-items-flex-end">
         {!started && (
           <button
             type="submit"

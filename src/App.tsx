@@ -75,23 +75,20 @@ function App() {
   };
 
   return isAuthenticated ? (
-    <main className="is-0">
+    <main className="is-0 is-flex is-flex-direction-column">
       <div className="main-menu">
-        <section className="container mb-4">
-          <div className="columns is-gapless" style={{ height: "20px" }}>
-            {/* TODO: FIX height in CSS styles */}
+        <section className="container">
+          <div className="is-flex">
             <div className="column is-size-4 has-text-centered">
               APP shows inactive clients in Bitrix24 CRM within specified period
               of time
             </div>
-            <div className="column is-1">
-              <button
-                className="button is-ghost"
-                onClick={() => logout({ returnTo: window.location.origin })}
-              >
-                Log Out
-              </button>
-            </div>
+            <button
+              className="column is-1 button is-ghost"
+              onClick={() => logout({ returnTo: window.location.origin })}
+            >
+              Log Out
+            </button>
           </div>
           <Form
             process={process}

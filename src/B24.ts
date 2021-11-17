@@ -9,6 +9,7 @@ import type {
   CorporateEmail,
 } from "./types";
 import fetch from "cross-fetch";
+import { COMPANY_STATUS_CRM_FIELD } from "./constants";
 
 const B24Config = {
   hostname: process.env.REACT_APP_B24_HOSTNAME || "",
@@ -78,7 +79,7 @@ async function getEntities(
   responsibleId: `${number}`
 ): Promise<Entity[]> {
   const selectMap = {
-    company: ["ID", "TITLE"],
+    company: ["ID", "TITLE", COMPANY_STATUS_CRM_FIELD], //UF_CRM used to provide Status: Potential, Working, Not Working.
     contact: ["ID", "NAME", "LAST_NAME"],
     lead: ["ID", "NAME", "LAST_NAME", "TITLE"],
   };
@@ -88,6 +89,7 @@ async function getEntities(
     FILTER: { ASSIGNED_BY_ID: responsibleId },
     SELECT: selectMap[type],
   }).then((entities: RawEntity[]): Entity[] => {
+    debugger;
     return type === "contact"
       ? (entities as ContactEntity[]).map(({ NAME, LAST_NAME, ...entity }) => ({
           id: entity.ID,
