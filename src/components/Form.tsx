@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
-import { departId, Employee, ProcessingProps, CorporateEmail } from "../types";
+import type {
+  departId,
+  Employee,
+  ProcessingProps,
+  CorporateEmail,
+  CompanyStatusType,
+} from "../types";
 import { Department, getDepartments } from "../B24";
 import { useAuth0 } from "@auth0/auth0-react";
 import { CompanyStatus } from "./CompanyStatus/CompanyStatus";
@@ -13,26 +19,13 @@ type FormProps = {
 
 const ManagerEmails = JSON.parse(process.env.REACT_APP_MANAGERS ?? "");
 
-const COMPANY_STATUS = {
-  1257: "Potential",
-  1259: "Working",
-  1261: "Not working",
-} as const;
-
-const initCompanyStatuses = Object.entries(COMPANY_STATUS).map(
-  ([id, status]) => ({
-    status,
-    id,
-  })
-);
-
 function Form({ process, isLoading, abort }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
   const [employee, setEmployee] = useState<Employee>();
   const [inactivityPeriod, setInactivityPeriod] = useState<string>("6 month");
   const [departments, setDepartments] = useState<Department[]>([]);
   const [started, setStarted] = useState<boolean>(false);
-  const [companyStatuses, setCompanyStatuses] = useState(initCompanyStatuses);
+  const [companyStatuses, setCompanyStatuses] = useState<CompanyStatusType[]>();
 
   const { user } = useAuth0();
 
@@ -59,6 +52,7 @@ function Form({ process, isLoading, abort }: FormProps) {
           process({
             employee,
             inactivityPeriod,
+            companyStatuses,
           }).finally(() => setStarted(false));
         }
       }}
@@ -130,7 +124,7 @@ function Form({ process, isLoading, abort }: FormProps) {
         </label>
       </div>
       <div className="column">
-        <CompanyStatus options={companyStatuses} />
+        <CompanyStatus setCompanyStatuses={setCompanyStatuses} />
       </div>
       <div className="column is-2 is-flex is-justify-content-space-evenly is-align-items-flex-end">
         {!started && (
@@ -164,7 +158,7 @@ function Form({ process, isLoading, abort }: FormProps) {
 }
 
 export default Form;
-export { initCompanyStatuses };
+export type { FormProps };
 
 /* <button
           type="submit"

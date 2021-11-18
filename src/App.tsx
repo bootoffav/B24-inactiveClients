@@ -1,5 +1,5 @@
 import { useReducer, useState } from "react";
-import Form from "./components/Form";
+import Form, { FormProps } from "./components/Form";
 import Progress from "./components/Progress/Progress";
 // import SentEmail from "./components/SentEmail";
 import Abort from "./components/Abort";
@@ -36,25 +36,16 @@ function App() {
     return <LoadingUserData />;
   }
 
-  // @ts-ignore
-  const process = async ({ employee, inactivityPeriod }) => {
-    // fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
-    //   mode: "no-cors", // todo
-    //   method: "post",
-    //   body: stringify({
-    //     inactivityPeriod,
-    //     id: employee.id,
-    //     email: employee.email,
-    //   }),
-    // }).then(() => {
-    //   setEmailWhereToBeSent(employee.email);
-    //   setAppState("emailed");
-    // });
+  const process: FormProps["process"] = async ({
+    employee,
+    inactivityPeriod,
+    companyStatuses,
+  }) => {
     setAppState("started");
-
     for await (const [type, payload] of processing({
       employee,
       inactivityPeriod,
+      companyStatuses,
     })) {
       if (window.aborted) return Promise.resolve(void (window.aborted = false));
 
@@ -126,3 +117,16 @@ function App() {
 }
 
 export default App;
+
+// fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
+//   mode: "no-cors", // todo
+//   method: "post",
+//   body: stringify({
+//     inactivityPeriod,
+//     id: employee.id,
+//     email: employee.email,
+//   }),
+// }).then(() => {
+//   setEmailWhereToBeSent(employee.email);
+//   setAppState("emailed");
+// });

@@ -6,15 +6,16 @@ import { ProcessingProps, InActiveData, Entity, ProgressTuple } from "./types";
 async function* processing({
   employee,
   inactivityPeriod,
+  companyStatuses,
 }: ProcessingProps): AsyncGenerator<
   [keyof InActiveData & string, Entity[] | ProgressTuple]
 > {
   for (const type of inActivityDataTypes) {
     let inactiveEntities: Entity[] = [];
-
     const entities = await getEntities(
       type as keyof InActiveData & string,
-      employee.id
+      employee.id,
+      companyStatuses
     );
     yield [type, [0, entities.length]];
 

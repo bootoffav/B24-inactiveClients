@@ -6,6 +6,8 @@ declare global {
 
 export type departId = `${number}`;
 
+export type CompanyStatusType = "1257" | "1259" | "1261";
+
 export type AppState =
   | "initial"
   | "started"
@@ -16,6 +18,7 @@ export type AppState =
 export interface ProcessingProps {
   readonly employee: Employee;
   readonly inactivityPeriod: string;
+  readonly companyStatuses?: CompanyStatusType[];
 }
 
 export type CorporateEmail = `${string}@xmtextiles.${"com" | "eu"}`;

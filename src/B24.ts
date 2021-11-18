@@ -7,6 +7,7 @@ import type {
   Employee,
   RawEntity,
   CorporateEmail,
+  CompanyStatusType,
 } from "./types";
 import fetch from "cross-fetch";
 import { COMPANY_STATUS_CRM_FIELD } from "./constants";
@@ -76,27 +77,51 @@ type ContactEntity = RawEntity & {
 
 async function getEntities(
   type: keyof InActiveData & string,
-  responsibleId: `${number}`
+  responsibleId: `${number}`,
+  statuses?: CompanyStatusType[]
 ): Promise<Entity[]> {
   const selectMap = {
     company: ["ID", "TITLE", COMPANY_STATUS_CRM_FIELD], //UF_CRM used to provide Status: Potential, Working, Not Working.
     contact: ["ID", "NAME", "LAST_NAME"],
     lead: ["ID", "NAME", "LAST_NAME", "TITLE"],
   };
+  let rawEntities: RawEntity[] = [];
 
-  return await getAllData(`crm.${type}.list`, {
-    ORDER: { DATE_CREATE: "ASC" },
-    FILTER: { ASSIGNED_BY_ID: responsibleId },
-    SELECT: selectMap[type],
-  }).then((entities: RawEntity[]): Entity[] => {
-    debugger;
-    return type === "contact"
-      ? (entities as ContactEntity[]).map(({ NAME, LAST_NAME, ...entity }) => ({
-          id: entity.ID,
-          title: `${NAME ?? ""}${LAST_NAME ? ` ${LAST_NAME}` : ""}`,
-        }))
-      : entities.map((entity) => ({ id: entity.ID, title: entity.TITLE }));
-  });
+  if (statuses) {
+    // if status has some values request those companies, do concatenation
+    for (const status of statuses) {
+      const currentRawEntities = await getAllData(`crm.${type}.list`, {
+        ORDER: { DATE_CREATE: "ASC" },
+        FILTER: {
+          ASSIGNED_BY_ID: responsibleId,
+          [COMPANY_STATUS_CRM_FIELD]: status,
+        },
+        SELECT: selectMap[type],
+      });
+      rawEntities = [...rawEntities, ...currentRawEntities];
+    }
+  } else {
+    // statuses === undefined do by default
+    rawEntities = await getAllData(`crm.${type}.list`, {
+      ORDER: { DATE_CREATE: "ASC" },
+      FILTER: {
+        ASSIGNED_BY_ID: responsibleId,
+      },
+      SELECT: selectMap[type],
+    });
+  }
+
+  const entities =
+    type === "contact"
+      ? (rawEntities as ContactEntity[]).map(
+          ({ NAME, LAST_NAME, ...entity }) => ({
+            id: entity.ID,
+            title: `${NAME ?? ""}${LAST_NAME ? ` ${LAST_NAME}` : ""}`,
+          })
+        )
+      : rawEntities.map((entity) => ({ id: entity.ID, title: entity.TITLE }));
+
+  return entities;
 }
 
 type Filter = {
@@ -107,6 +132,7 @@ type Filter = {
     | "ASSIGNED_BY_ID"
     | "COMPANY_ID"
     | "OWNER_TYPE_ID"
+    | typeof COMPANY_STATUS_CRM_FIELD
     | "OWNER_ID"]?: `${number}`;
 };
 
