@@ -3,7 +3,7 @@ import { EmployeeSelector } from "./EmployeeSelector";
 import { departId, Employee, ProcessingProps, CorporateEmail } from "../types";
 import { Department, getDepartments } from "../B24";
 import { useAuth0 } from "@auth0/auth0-react";
-import { CompanyStatus } from "./CompanyStatus";
+import { CompanyStatus } from "./CompanyStatus/CompanyStatus";
 
 type FormProps = {
   process: (props: ProcessingProps) => Promise<void>;
@@ -19,18 +19,20 @@ const COMPANY_STATUS = {
   1261: "Not working",
 } as const;
 
+const initCompanyStatuses = Object.entries(COMPANY_STATUS).map(
+  ([id, status]) => ({
+    status,
+    id,
+  })
+);
+
 function Form({ process, isLoading, abort }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
   const [employee, setEmployee] = useState<Employee>();
   const [inactivityPeriod, setInactivityPeriod] = useState<string>("6 month");
   const [departments, setDepartments] = useState<Department[]>([]);
   const [started, setStarted] = useState<boolean>(false);
-  const [companyStatuses, setCompanyStatuses] = useState(
-    Object.entries(COMPANY_STATUS).map(([id, status]) => ({
-      status,
-      id,
-    }))
-  );
+  const [companyStatuses, setCompanyStatuses] = useState(initCompanyStatuses);
 
   const { user } = useAuth0();
 
@@ -162,6 +164,7 @@ function Form({ process, isLoading, abort }: FormProps) {
 }
 
 export default Form;
+export { initCompanyStatuses };
 
 /* <button
           type="submit"
