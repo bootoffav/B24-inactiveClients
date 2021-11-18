@@ -87,7 +87,7 @@ async function getEntities(
   };
   let rawEntities: RawEntity[] = [];
 
-  if (statuses) {
+  if (type === "company" && statuses) {
     // if status has some values request those companies, do concatenation
     for (const status of statuses) {
       const currentRawEntities = await getAllData(`crm.${type}.list`, {
