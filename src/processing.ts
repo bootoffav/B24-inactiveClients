@@ -1,6 +1,11 @@
-import { delay, isInActiveEntity, inActivityDataTypes } from "./helpers";
+// @ts-nocheck
+import {
+  delay,
+  isInActiveEntity,
+  // inActivityDataTypes
+} from "./helpers";
 import { getEntities } from "./B24";
-import { getLastActivity } from "./lastActivity";
+import { getLastActivity } from "./filter/lastActivity";
 import { ProcessingProps, InActiveData, Entity, ProgressTuple } from "./types";
 
 async function* processing({
@@ -10,7 +15,7 @@ async function* processing({
 }: ProcessingProps): AsyncGenerator<
   [keyof InActiveData & string, Entity[] | ProgressTuple]
 > {
-  for (const type of inActivityDataTypes) {
+  for (const type of ["company"]) {
     let inactiveEntities: Entity[] = [];
     const entities = await getEntities(
       type as keyof InActiveData & string,
