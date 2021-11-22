@@ -15,8 +15,8 @@ const pluralMap = {
   lead: "leads",
 };
 
-const delay = async (ms = 500) =>
-  await new Promise((res) => setTimeout(res, ms));
+const delay = async (ms = process.env.REACT_APP_DELAY || 700) =>
+  await new Promise((res) => setTimeout(res, Number(ms)));
 
 function getLastDayOfActivePeriod(amount: string, unit: string) {
   return today.subtract(Number(amount), unit);
