@@ -8,8 +8,6 @@ body {
 
 .main-menu {
   background-color: gainsboro;
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.5rem;
 }
 
 table {
@@ -38,5 +36,10 @@ td {
   height: 40px;
 }
 
+.columns:last-child {
+  margin-bottom: 0;
+}
+
 @import "~@creativebulma/bulma-tooltip/dist/bulma-tooltip.min.css";
 @import "~@creativebulma/bulma-badge/dist/bulma-badge.min.css";
+@import "~@fortawesome/fontawesome-free/css/all.min.css";

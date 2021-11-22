@@ -6,6 +6,7 @@
     "@auth0/auth0-react": "^1.8.0",
     "@creativebulma/bulma-badge": "^1.0.1",
     "@creativebulma/bulma-tooltip": "^1.2.0",
+    "@fortawesome/fontawesome-free": "^5.15.4",
     "@netlify/functions": "^0.8.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
