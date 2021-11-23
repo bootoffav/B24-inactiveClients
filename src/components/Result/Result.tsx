@@ -1,32 +1,19 @@
-import { useState } from "react";
-import { inActivityDataTypes } from "../../helpers";
 import type { InActiveData } from "../../types";
-import { Tabs } from "./Tabs/Tabs";
 import { TabWithContent } from "./Tabs/TabWithContent";
 
 type ResultProps = {
   inActiveData: InActiveData;
+  type: keyof InActiveData;
 };
 
-function Result({ inActiveData }: ResultProps) {
-  const [activeTab, setActiveTab] = useState<keyof InActiveData>("company");
+function Result({ inActiveData, type }: ResultProps) {
   return (
     <section className="container">
-      <Tabs
-        inActiveData={inActiveData}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
+      <TabWithContent
+        key={type}
+        type={type}
+        inActiveEntities={inActiveData[type]}
       />
-      {inActivityDataTypes.map((type) => {
-        return (
-          <TabWithContent
-            key={type}
-            type={type}
-            inActiveEntities={inActiveData[type]}
-            activeTab={type === activeTab}
-          />
-        );
-      })}
     </section>
   );
 }

@@ -7,11 +7,9 @@ import EmptyTab from "./EmptyTab";
 function TabWithContent({
   type,
   inActiveEntities,
-  activeTab,
 }: {
   type: keyof InActiveData;
   inActiveEntities: Entity[];
-  activeTab: boolean;
 }) {
   const columns = useMemo(
     () => [
@@ -73,7 +71,7 @@ function TabWithContent({
   );
 
   return inActiveEntities.length ? (
-    <section style={{ display: `${activeTab ? "" : "none"}` }}>
+    <section>
       <table className={`table is-hoverable is-fullwidth`} {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -147,7 +145,7 @@ function TabWithContent({
       </nav>
     </section>
   ) : (
-    <EmptyTab type={type} activeTab={activeTab} />
+    <EmptyTab type={type} />
   );
 }
 

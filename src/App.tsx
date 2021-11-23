@@ -5,7 +5,6 @@ import Progress from "./components/Progress/Progress";
 import Abort from "./components/Abort";
 import Result from "./components/Result/Result";
 import { AppState, Entity, InActiveData, ProgressTuple } from "./types";
-import { inActivityDataTypes } from "./helpers";
 import processing from "./processing";
 import {
   inActiveReducer,
@@ -25,6 +24,8 @@ function App() {
     initInactiveState
   );
 
+  const [entityToCheck, setEntityToCheck] =
+    useState<keyof InActiveData>("company");
   const [progressState, dispatchProgressReducer] = useReducer(
     progressReducer,
     initProgressState
@@ -40,12 +41,15 @@ function App() {
     employee,
     inactivityPeriod,
     companyStatuses,
+    entityToCheck,
   }) => {
     setAppState("started");
+    setEntityToCheck(entityToCheck);
     for await (const [type, payload] of processing({
       employee,
       inactivityPeriod,
       companyStatuses,
+      entityToCheck,
     })) {
       if (window.aborted) return Promise.resolve(void (window.aborted = false));
 
@@ -97,16 +101,17 @@ function App() {
         </section>
       </div>
       <div className="result-menu">
-        {appState === "started" &&
-          inActivityDataTypes.map((type: keyof InActiveData) => (
-            <Progress
-              key={type}
-              current={progressState[type].current}
-              total={progressState[type].total}
-              type={type}
-            />
-          ))}
-        {appState === "finished" && <Result inActiveData={inActiveData} />}
+        {appState === "started" && (
+          <Progress
+            key={entityToCheck}
+            current={progressState[entityToCheck].current}
+            total={progressState[entityToCheck].total}
+            type={entityToCheck}
+          />
+        )}
+        {appState === "finished" && (
+          <Result inActiveData={inActiveData} type={entityToCheck} />
+        )}
         {/* {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />} */}
         {appState === "aborted" && <Abort />}
       </div>

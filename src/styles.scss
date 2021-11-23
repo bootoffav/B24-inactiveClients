@@ -8,6 +8,8 @@ body {
 
 .main-menu {
   background-color: gainsboro;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 table {
@@ -36,7 +38,7 @@ td {
   height: 40px;
 }
 
-.columns:last-child {
+.columns:not(:last-child) {
   margin-bottom: 0;
 }
 

@@ -57,6 +57,7 @@ function Form({ process, isLoading, abort }: FormProps) {
             employee,
             inactivityPeriod,
             companyStatuses,
+            entityToCheck,
           }).finally(() => setStarted(false));
         }
       }}
