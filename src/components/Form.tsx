@@ -138,7 +138,10 @@ function Form({ process, isLoading, abort }: FormProps) {
           />
         </div>
         <div className="column is-4">
-          <CompanyStatus setCompanyStatuses={setCompanyStatuses} />
+          <CompanyStatus
+            setCompanyStatuses={setCompanyStatuses}
+            entityToCheck={entityToCheck}
+          />
         </div>
         <div className="column is-4 is-flex is-justify-content-space-evenly is-align-items-flex-end">
           {!started && (

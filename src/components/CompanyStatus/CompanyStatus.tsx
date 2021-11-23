@@ -1,6 +1,6 @@
 import Multiselect from "multiselect-react-dropdown";
 import { useEffect, useState } from "react";
-import { CompanyStatusType } from "../../types";
+import { CompanyStatusType, InActiveData } from "../../types";
 
 const COMPANY_STATUS = {
   1257: "Potential",
@@ -16,10 +16,14 @@ const initCompanyStatuses = Object.entries(COMPANY_STATUS).map(
 );
 
 type CompanyStatusProps = {
+  entityToCheck: keyof InActiveData;
   setCompanyStatuses: (ids?: CompanyStatusType[]) => void;
 };
 
-function CompanyStatus({ setCompanyStatuses }: CompanyStatusProps) {
+function CompanyStatus({
+  setCompanyStatuses,
+  entityToCheck,
+}: CompanyStatusProps) {
   const [checkboxState, setCheckboxState] = useState(false);
   const [options, setOptions] = useState(initCompanyStatuses);
 
@@ -29,6 +33,12 @@ function CompanyStatus({ setCompanyStatuses }: CompanyStatusProps) {
       setCompanyStatuses();
     }
   }, [checkboxState, setCompanyStatuses]);
+
+  useEffect(() => {
+    if (entityToCheck !== "company") {
+      setCheckboxState(false);
+    }
+  }, [entityToCheck]);
 
   const changeOptions = (list: typeof initCompanyStatuses) => {
     setOptions(list);
@@ -45,6 +55,7 @@ function CompanyStatus({ setCompanyStatuses }: CompanyStatusProps) {
           type="checkbox"
           checked={checkboxState}
           onChange={() => setCheckboxState(!checkboxState)}
+          disabled={entityToCheck !== "company"}
         />{" "}
         Check by company status:
       </label>

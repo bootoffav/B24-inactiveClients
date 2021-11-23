@@ -95,7 +95,6 @@ async function getLastActivity(
         ]
       : allLastActivitiesForRelatedEntities;
 
-    console.log(candidatesToLastActivity, ownerId);
     return candidatesToLastActivity.length
       ? findLatestActivity(candidatesToLastActivity)
       : undefined;
