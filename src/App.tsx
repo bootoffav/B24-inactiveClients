@@ -4,25 +4,38 @@ import Progress from "./components/Progress/Progress";
 // import SentEmail from "./components/SentEmail";
 import Abort from "./components/Abort";
 import Result from "./components/Result/Result";
-import { AppState, Entity, InActiveData, ProgressTuple } from "./types";
+import {
+  AppState,
+  Entity,
+  InActiveData,
+  Employee,
+  ProgressTuple,
+} from "./types";
 import processing from "./processing";
 import {
   inActiveReducer,
   progressReducer,
   initProgressState,
-  initInactiveState,
+  // initInactiveState,
 } from "./reducers";
 import { useAuth0 } from "@auth0/auth0-react";
 // import { stringify } from "qs";
 import LoadingUserData from "./components/LoadingUserData";
+import testData from "./testData";
+import Export from "./components/Export/ExportUI";
 
 function App() {
-  const [appState, setAppState] = useState<AppState>("initial");
+  const [appState, setAppState] = useState<AppState>("finished");
+  const [employee, setEmployee] = useState<Employee>();
   // const [emailWhereToBeSent, setEmailWhereToBeSent] = useState<string>();
-  const [inActiveData, dispatchInActiveReducer] = useReducer(
-    inActiveReducer,
-    initInactiveState
-  );
+  // @ts-ignore
+  const [inActiveData, dispatchInActiveReducer] = useReducer(inActiveReducer, {
+    lead: [],
+    ...testData,
+    contact: [],
+  });
+  // @ts-ignore
+  // initInactiveState
 
   const [entityToCheck, setEntityToCheck] =
     useState<keyof InActiveData>("company");
@@ -45,6 +58,7 @@ function App() {
   }) => {
     setAppState("started");
     setEntityToCheck(entityToCheck);
+    setEmployee(employee);
     for await (const [type, payload] of processing({
       employee,
       inactivityPeriod,
@@ -59,6 +73,7 @@ function App() {
           payload: payload as ProgressTuple,
         });
       } else {
+        // @ts-ignore
         dispatchInActiveReducer({
           type,
           payload: payload as Entity[],
@@ -91,6 +106,7 @@ function App() {
             abort={() => {
               setAppState("aborted");
               dispatchProgressReducer({ type: "reset", payload: [0, 0] });
+              // @ts-ignore
               dispatchInActiveReducer({
                 type: "reset",
                 payload: [],
@@ -100,7 +116,7 @@ function App() {
           />
         </section>
       </div>
-      <div className="result-menu">
+      <div className="result-menu container">
         {appState === "started" && (
           <Progress
             key={entityToCheck}
@@ -110,7 +126,14 @@ function App() {
           />
         )}
         {appState === "finished" && (
-          <Result inActiveData={inActiveData} type={entityToCheck} />
+          <>
+            <Export
+              inActiveData={inActiveData}
+              type={entityToCheck}
+              employee={employee}
+            />
+            <Result inActiveData={inActiveData} type={entityToCheck} />
+          </>
         )}
         {/* {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />} */}
         {appState === "aborted" && <Abort />}

@@ -74,7 +74,6 @@ function Form({ process, isLoading, abort }: FormProps) {
           `}
               >
                 <select
-                  className="is-focused"
                   required
                   id="department"
                   onChange={({ target }: React.BaseSyntheticEvent) =>
@@ -147,7 +146,7 @@ function Form({ process, isLoading, abort }: FormProps) {
           {!started && (
             <button
               type="submit"
-              className={`button mr-1 is-fullwidth is-info ${
+              className={`button is-fullwidth is-info ${
                 isLoading ? "is-loading" : ""
               }`}
               disabled={isLoading}

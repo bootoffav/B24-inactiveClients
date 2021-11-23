@@ -8,13 +8,11 @@ type ResultProps = {
 
 function Result({ inActiveData, type }: ResultProps) {
   return (
-    <section className="container">
-      <TabWithContent
-        key={type}
-        type={type}
-        inActiveEntities={inActiveData[type]}
-      />
-    </section>
+    <TabWithContent
+      key={type}
+      type={type}
+      inActiveEntities={inActiveData[type]}
+    />
   );
 }
 
