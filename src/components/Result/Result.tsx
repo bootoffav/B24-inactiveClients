@@ -9,6 +9,7 @@ type ResultProps = {
 function Result({ inActiveData, type }: ResultProps) {
   return (
     <TabWithContent
+      // todo Remove Tabs
       key={type}
       type={type}
       inActiveEntities={inActiveData[type]}

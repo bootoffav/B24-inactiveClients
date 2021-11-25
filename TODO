@@ -7,5 +7,9 @@ Process to find inactive clients:
     ✔ No add this company to list @done(21-10-15 14:59)
 
 Add styles:
-  ☐ Font icons for tabs
-  ☐ CSS Transition effects
+  ✔ Font icons for tabs @done(21-11-25 12:49)
+  ✔ CSS Transition effects @done(21-11-25 12:49)
+
+Global todos:
+  ☐ take CRM entities(contacts, deals, leads) as a whole and keep in memory for checking related entities
+  ☐ Develop send to email feature

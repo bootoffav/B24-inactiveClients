@@ -7,29 +7,28 @@ type ProgressProps = {
   type: keyof InActiveData;
 };
 
-function Progress({ current, total, type }: ProgressProps) {
-  const showCurrentProgressedType = () => (
-    <div className={`block columns ${total ? "" : "is-hidden"}`}>
-      <div className="column is-4 has-text-right">
-        Fetching data in CRM{" "}
+const Progress = ({ current, total, type }: ProgressProps) => {
+  // debugger;
+  return (
+    <div className="block columns">
+      <div className="column is-one-third">
+        Checking activities of{" "}
         <span className="is-capitalized">{pluralMap[type]}</span>: {current} of{" "}
         {total}
       </div>
       <div className="column is-align-self-center">
-        <progress className="progress is-primary" value={current} max={total}>
-          {current}%
-        </progress>
+        {total ? (
+          <progress className="progress is-info" value={current} max={total}>
+            {current}%
+          </progress>
+        ) : (
+          <progress className="progress is-info" max={total}>
+            {current}%
+          </progress>
+        )}
       </div>
     </div>
   );
-
-  return (
-    <section className="container block">
-      <div className="is-flex is-flex-direction-column">
-        {showCurrentProgressedType()}
-      </div>
-    </section>
-  );
-}
+};
 
 export default Progress;

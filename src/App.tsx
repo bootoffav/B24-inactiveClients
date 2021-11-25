@@ -16,26 +16,21 @@ import {
   inActiveReducer,
   progressReducer,
   initProgressState,
-  // initInactiveState,
+  initInactiveState,
 } from "./reducers";
 import { useAuth0 } from "@auth0/auth0-react";
 // import { stringify } from "qs";
 import LoadingUserData from "./components/LoadingUserData";
-import testData from "./testData";
-import Export from "./components/Export/ExportUI";
+import Export from "./components/Export/Export";
 
 function App() {
-  const [appState, setAppState] = useState<AppState>("finished");
+  const [appState, setAppState] = useState<AppState>("initial");
   const [employee, setEmployee] = useState<Employee>();
   // const [emailWhereToBeSent, setEmailWhereToBeSent] = useState<string>();
-  // @ts-ignore
-  const [inActiveData, dispatchInActiveReducer] = useReducer(inActiveReducer, {
-    lead: [],
-    ...testData,
-    contact: [],
-  });
-  // @ts-ignore
-  // initInactiveState
+  const [inActiveData, dispatchInActiveReducer] = useReducer(
+    inActiveReducer,
+    initInactiveState
+  );
 
   const [entityToCheck, setEntityToCheck] =
     useState<keyof InActiveData>("company");
@@ -73,7 +68,6 @@ function App() {
           payload: payload as ProgressTuple,
         });
       } else {
-        // @ts-ignore
         dispatchInActiveReducer({
           type,
           payload: payload as Entity[],
@@ -106,7 +100,6 @@ function App() {
             abort={() => {
               setAppState("aborted");
               dispatchProgressReducer({ type: "reset", payload: [0, 0] });
-              // @ts-ignore
               dispatchInActiveReducer({
                 type: "reset",
                 payload: [],
@@ -116,27 +109,29 @@ function App() {
           />
         </section>
       </div>
-      <div className="result-menu container">
-        {appState === "started" && (
-          <Progress
-            key={entityToCheck}
-            current={progressState[entityToCheck].current}
-            total={progressState[entityToCheck].total}
-            type={entityToCheck}
-          />
-        )}
-        {appState === "finished" && (
-          <>
-            <Export
-              inActiveData={inActiveData}
+      <div className="result-menu">
+        <section className="container">
+          {appState === "started" && (
+            <Progress
+              key={entityToCheck}
+              current={progressState[entityToCheck].current}
+              total={progressState[entityToCheck].total}
               type={entityToCheck}
-              employee={employee}
             />
-            <Result inActiveData={inActiveData} type={entityToCheck} />
-          </>
-        )}
-        {/* {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />} */}
-        {appState === "aborted" && <Abort />}
+          )}
+          {appState === "finished" && (
+            <>
+              <Export
+                inActiveData={inActiveData}
+                type={entityToCheck}
+                employee={employee}
+              />
+              <Result inActiveData={inActiveData} type={entityToCheck} />
+            </>
+          )}
+          {/* {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />} */}
+          {appState === "aborted" && <Abort />}
+        </section>
       </div>
     </main>
   ) : (
