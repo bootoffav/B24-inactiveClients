@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { EmployeeSelector } from "./EmployeeSelector";
+import { isManager } from "../helpers";
 import type {
   departId,
   Employee,
@@ -19,8 +20,6 @@ type FormProps = {
   abort: () => void;
 };
 
-const ManagerEmails = JSON.parse(process.env.REACT_APP_MANAGERS ?? "");
-
 function Form({ process, isLoading, abort }: FormProps) {
   const [departId, setDepartId] = useState<departId>();
   const [employee, setEmployee] = useState<Employee>();
@@ -38,12 +37,6 @@ function Form({ process, isLoading, abort }: FormProps) {
       setDepartments(await getDepartments());
     })();
   }, []);
-
-  const isManager = (): boolean => {
-    return !!ManagerEmails.find(
-      (email: CorporateEmail) => email === user?.email
-    );
-  };
 
   return (
     <form
@@ -63,7 +56,7 @@ function Form({ process, isLoading, abort }: FormProps) {
       }}
     >
       <div className="columns">
-        {isManager() && (
+        {isManager(user?.email as CorporateEmail) && (
           <div className={`column`}>
             <label htmlFor="department" aria-label="department">
               Choose department:
@@ -97,7 +90,9 @@ function Form({ process, isLoading, abort }: FormProps) {
             <EmployeeSelector
               departId={departId}
               singleUser={
-                isManager() ? undefined : (user?.email as CorporateEmail)
+                isManager(user?.email as CorporateEmail)
+                  ? undefined
+                  : (user?.email as CorporateEmail)
               }
               changeEmployee={setEmployee}
             />

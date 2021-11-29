@@ -10,6 +10,7 @@ import {
   InActiveData,
   Employee,
   ProgressTuple,
+  CorporateEmail,
 } from "./types";
 import processing from "./processing";
 import {
@@ -22,6 +23,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 // import { stringify } from "qs";
 import LoadingUserData from "./components/LoadingUserData";
 import Export from "./components/Export/Export";
+import { isManager } from "./helpers";
 
 function App() {
   const [appState, setAppState] = useState<AppState>("initial");
@@ -39,7 +41,8 @@ function App() {
     initProgressState
   );
 
-  const { loginWithRedirect, isAuthenticated, isLoading, logout } = useAuth0();
+  const { loginWithRedirect, isAuthenticated, isLoading, logout, user } =
+    useAuth0();
 
   if (isLoading) {
     return <LoadingUserData />;
@@ -121,11 +124,13 @@ function App() {
           )}
           {appState === "finished" && (
             <>
-              <Export
-                inActiveData={inActiveData}
-                type={entityToCheck}
-                employee={employee}
-              />
+              {isManager(user?.email as CorporateEmail) && (
+                <Export
+                  inActiveData={inActiveData}
+                  type={entityToCheck}
+                  employee={employee}
+                />
+              )}
               <Result inActiveData={inActiveData} type={entityToCheck} />
             </>
           )}

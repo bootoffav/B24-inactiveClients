@@ -1,7 +1,12 @@
 import dayjs from "dayjs";
-import { Activity, InActiveData } from "./types";
+import { Activity, InActiveData, CorporateEmail } from "./types";
 
 const today = dayjs();
+
+const isManager = (userEmail?: CorporateEmail): boolean => {
+  const ManagerEmails = JSON.parse(process.env.REACT_APP_MANAGERS ?? "");
+  return !!ManagerEmails.find((email: CorporateEmail) => email === userEmail);
+};
 
 const inActivityDataTypes: (keyof InActiveData)[] = [
   "company",
@@ -37,4 +42,5 @@ export {
   inActivityDataTypes,
   delay,
   getLastDayOfActivePeriod,
+  isManager,
 };
