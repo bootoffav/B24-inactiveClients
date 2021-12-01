@@ -39,10 +39,19 @@ export type Employee = {
 export type RawEntity = {
   readonly ID: `${number}`;
   readonly TITLE: string;
+  readonly COMPANY_ID?: `${number}`;
+};
+
+export type userRelatedCRMEntities = {
+  contact: Entity[];
+  deal: Entity[];
+  lead: Entity[];
 };
 
 export type Entity = {
-  [Prop in keyof RawEntity as `${Lowercase<Prop>}`]: RawEntity[Prop];
+  readonly id: `${number}`;
+  readonly title: string;
+  readonly companyId?: `${number}`;
 } & { lastActivity?: Activity };
 
 export type Activity = {

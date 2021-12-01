@@ -1,5 +1,6 @@
 import { stringify } from "qs";
 import type {
+  userRelatedCRMEntities,
   departId,
   Entity,
   InActiveData,
@@ -76,14 +77,15 @@ type ContactEntity = RawEntity & {
 };
 
 async function getEntities(
-  type: keyof InActiveData & string,
+  type: (keyof InActiveData & string) | "deal",
   responsibleId: `${number}`,
   statuses?: CompanyStatusType[]
 ): Promise<Entity[]> {
   const selectMap = {
     company: ["ID", "TITLE", COMPANY_STATUS_CRM_FIELD], //UF_CRM used to provide Status: Potential, Working, Not Working.
-    contact: ["ID", "NAME", "LAST_NAME"],
-    lead: ["ID", "NAME", "LAST_NAME", "TITLE"],
+    contact: ["ID", "NAME", "LAST_NAME", "COMPANY_ID"],
+    lead: ["ID", "NAME", "LAST_NAME", "TITLE", "COMPANY_ID"],
+    deal: ["ID", "TITLE", "COMPANY_ID"],
   };
   let rawEntities: RawEntity[] = [];
 
@@ -111,17 +113,62 @@ async function getEntities(
     });
   }
 
-  const entities =
-    type === "contact"
-      ? (rawEntities as ContactEntity[]).map(
-          ({ NAME, LAST_NAME, ...entity }) => ({
-            id: entity.ID,
-            title: `${NAME ?? ""}${LAST_NAME ? ` ${LAST_NAME}` : ""}`,
-          })
-        )
-      : rawEntities.map((entity) => ({ id: entity.ID, title: entity.TITLE }));
+  // @ts-ignore
+  // const getTitle = (NAME, LAST_NAME) =>
+  //   `${NAME ?? ""}${LAST_NAME ? ` ${LAST_NAME}` : ""}`;
 
-  return entities;
+  // const entities =
+  //   type === "contact"
+  //     ? (rawEntities as ContactEntity[]).map(
+  //         ({ NAME, LAST_NAME, ...entity }) => {
+  //           return {
+  //             id: entity.ID,
+  //             companyId: entity.COMPANY_ID,
+  //             title: `${NAME ?? ""}${LAST_NAME ? ` ${LAST_NAME}` : ""}`,
+  //           };
+  //         }
+  //       )
+  //     : rawEntities.map((entity) => ({ id: entity.ID, title: entity.TITLE }));
+
+  if (type === "company") {
+    return rawEntities.map((entity) => ({
+      id: entity.ID,
+      title: entity.TITLE,
+    }));
+  }
+
+  if (type === "contact") {
+    return (rawEntities as ContactEntity[]).map(
+      ({ NAME, LAST_NAME, ...entity }) => {
+        return {
+          id: entity.ID,
+          companyId: entity.COMPANY_ID,
+          title: `${NAME ?? ""}${LAST_NAME ? ` ${LAST_NAME}` : ""}`,
+        };
+      }
+    );
+  } else {
+    return rawEntities.map((entity) => ({
+      id: entity.ID,
+      companyId: entity.COMPANY_ID,
+      title: entity.TITLE,
+    }));
+  }
+
+  // const entities =
+  //   type === "contact"
+  //     ? (rawEntities as ContactEntity[]).map(
+  //         ({ NAME, LAST_NAME, ...entity }) => {
+  //           return {
+  //             id: entity.ID,
+  //             companyId: entity.COMPANY_ID,
+  //             title: `${NAME ?? ""}${LAST_NAME ? ` ${LAST_NAME}` : ""}`,
+  //           };
+  //         }
+  //       )
+  //     : rawEntities.map((entity) => ({ id: entity.ID, title: entity.TITLE }));
+
+  // return entities;
 }
 
 type Filter = {
@@ -169,4 +216,24 @@ async function getAllData(
   return wholeResult;
 }
 
-export { getEmployees, getEntities, getAllData, getDepartments };
+async function getUserRelatedCRMEntities(
+  responsibleId: `${number}`
+): Promise<userRelatedCRMEntities> {
+  const contact = await getEntities("contact", responsibleId);
+  const deal = await getEntities("deal", responsibleId);
+  const lead = await getEntities("lead", responsibleId);
+
+  return {
+    contact,
+    deal,
+    lead,
+  };
+}
+
+export {
+  getEmployees,
+  getEntities,
+  getAllData,
+  getDepartments,
+  getUserRelatedCRMEntities,
+};
