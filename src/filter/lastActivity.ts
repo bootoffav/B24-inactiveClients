@@ -30,7 +30,7 @@ async function getCompanyRelatedEntities(
     },
     true
   )
-    .then((contacts) => contacts.map((contact) => contact.ID))
+    .then((relatedEntities) => relatedEntities.map((entity) => entity.ID))
     .catch(() => []);
 }
 
