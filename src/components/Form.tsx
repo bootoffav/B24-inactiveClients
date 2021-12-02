@@ -13,6 +13,8 @@ import { Department, getDepartments } from "../B24";
 import { useAuth0 } from "@auth0/auth0-react";
 import { CompanyStatus } from "./CompanyStatus/CompanyStatus";
 import EntityChecking from "./EntityChecking/EntityChecking";
+import GetButton from "./SubmitButtons/GetButton/GetButton";
+import SendToEmailButton from "./SubmitButtons/SendToEmailButton/SendToEmailButton";
 
 type FormProps = {
   process: (props: ProcessingProps) => Promise<void>;
@@ -27,8 +29,8 @@ function Form({ process, isLoading, abort }: FormProps) {
     useState<keyof InActiveData>("company");
   const [inactivityPeriod, setInactivityPeriod] = useState<string>("6 month");
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [started, setStarted] = useState<boolean>(false);
   const [companyStatuses, setCompanyStatuses] = useState<CompanyStatusType[]>();
+  const [started, setStarted] = useState(false);
 
   const { user } = useAuth0();
 
@@ -45,12 +47,17 @@ function Form({ process, isLoading, abort }: FormProps) {
       onSubmit={(event) => {
         event.preventDefault();
         setStarted(true);
+        const destination =
+          ((event.nativeEvent as SubmitEvent).submitter?.dataset.destination as
+            | "web"
+            | "mail") ?? "web";
         if (employee) {
           process({
             employee,
             inactivityPeriod,
             companyStatuses,
             entityToCheck,
+            destination,
           }).finally(() => setStarted(false));
         }
       }}
@@ -137,32 +144,11 @@ function Form({ process, isLoading, abort }: FormProps) {
             entityToCheck={entityToCheck}
           />
         </div>
-        <div className="column is-4 is-flex is-justify-content-space-evenly is-align-items-flex-end">
-          {!started && (
-            <button
-              type="submit"
-              className={`button is-fullwidth is-info ${
-                isLoading ? "is-loading" : ""
-              }`}
-              disabled={isLoading}
-            >
-              Get
-            </button>
-          )}
-          {started && (
-            <div className="buttons has-addons is-flex-grow-1">
-              <button className="button is-info is-loading"></button>
-              <button
-                className="button is-info is-flex-grow-1"
-                onClick={() => {
-                  abort();
-                  setStarted(false);
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          )}
+        <div className="column is-2 is-flex is-align-items-end">
+          <GetButton abort={abort} started={started} setStarted={setStarted} />
+        </div>
+        <div className="column is-2 is-flex is-align-items-end">
+          <SendToEmailButton />
         </div>
       </div>
     </form>
@@ -171,12 +157,3 @@ function Form({ process, isLoading, abort }: FormProps) {
 
 export default Form;
 export type { FormProps };
-
-/* <button
-          type="submit"
-          className="button ml-1 is-fullwidth is-light"
-          disabled={isLoading}
-          value="email"
-        >
-          Send to email
-        </button> */

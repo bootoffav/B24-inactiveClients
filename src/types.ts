@@ -20,6 +20,7 @@ export interface ProcessingProps {
   readonly inactivityPeriod: string;
   readonly companyStatuses?: CompanyStatusType[];
   readonly entityToCheck: keyof InActiveData;
+  readonly destination: "web" | "mail";
 }
 
 export type CorporateEmail = `${string}@xmtextiles.${"com" | "eu"}`;

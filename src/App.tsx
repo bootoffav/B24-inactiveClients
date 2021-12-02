@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react";
 import Form, { FormProps } from "./components/Form";
 import Progress from "./components/Progress/Progress";
-// import SentEmail from "./components/SentEmail";
+import SentEmail from "./components/SentEmail";
 import Abort from "./components/Abort";
 import Result from "./components/Result/Result";
 import {
@@ -28,7 +28,7 @@ import { isManager } from "./helpers";
 function App() {
   const [appState, setAppState] = useState<AppState>("initial");
   const [employee, setEmployee] = useState<Employee>();
-  // const [emailWhereToBeSent, setEmailWhereToBeSent] = useState<string>();
+  const [emailWhereToBeSent, setEmailWhereToBeSent] = useState<string>();
   const [inActiveData, dispatchInActiveReducer] = useReducer(
     inActiveReducer,
     initInactiveState
@@ -53,7 +53,13 @@ function App() {
     inactivityPeriod,
     companyStatuses,
     entityToCheck,
+    destination,
   }) => {
+    if (destination === "mail") {
+      setEmailWhereToBeSent(user?.email ?? "");
+      setAppState("emailed");
+      return;
+    }
     setAppState("started");
     setEntityToCheck(entityToCheck);
     setEmployee(employee);
@@ -62,6 +68,7 @@ function App() {
       inactivityPeriod,
       companyStatuses,
       entityToCheck,
+      destination,
     })) {
       if (window.aborted) return Promise.resolve(void (window.aborted = false));
 
@@ -134,7 +141,7 @@ function App() {
               <Result inActiveData={inActiveData} type={entityToCheck} />
             </>
           )}
-          {/* {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />} */}
+          {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />}
           {appState === "aborted" && <Abort />}
         </section>
       </div>

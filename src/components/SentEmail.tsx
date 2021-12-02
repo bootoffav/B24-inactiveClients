@@ -11,7 +11,7 @@ function SentEmail({ email }: { email?: string }) {
           <span className="is-italic has-text-weight-semibold">
             {email ?? "your mailbox"}
           </span>
-          , meanwhile you may go away now. &#9989;
+          , meanwhile you may request another report. &#9989;
         </p>
       </div>
     </section>
