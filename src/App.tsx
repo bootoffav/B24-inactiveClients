@@ -29,7 +29,6 @@ import { isManager } from "./helpers";
 function App() {
   const [appState, setAppState] = useState<AppState>("initial");
   const [employee, setEmployee] = useState<Employee>();
-  const [emailWhereToBeSent, setEmailWhereToBeSent] = useState<string>();
   const [inActiveData, dispatchInActiveReducer] = useReducer(
     inActiveReducer,
     initInactiveState
@@ -57,7 +56,6 @@ function App() {
     destination,
   }: ProcessProps) => {
     if (destination === "mail") {
-      setEmailWhereToBeSent(user?.email ?? "");
       setAppState("emailed");
       return;
     }
@@ -123,7 +121,6 @@ function App() {
         <section className="container">
           {appState === "started" && (
             <Progress
-              key={entityToCheck}
               current={progressState[entityToCheck].current}
               total={progressState[entityToCheck].total}
               type={entityToCheck}
@@ -133,9 +130,9 @@ function App() {
             <>
               {isManager(user?.email as CorporateEmail) && (
                 <Export
-                  inActiveData={inActiveData}
+                  inActiveEntities={inActiveData[entityToCheck]}
                   type={entityToCheck}
-                  employee={employee}
+                  name={employee?.name ?? ""}
                 />
               )}
               <Result
@@ -144,7 +141,7 @@ function App() {
               />
             </>
           )}
-          {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />}
+          {appState === "emailed" && <SentEmail />}
           {appState === "aborted" && <Abort />}
         </section>
       </div>

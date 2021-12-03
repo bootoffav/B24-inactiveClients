@@ -13,7 +13,7 @@ const HeaderColumnStyle = {
   },
 };
 
-const getExcelFile = ({ employee, type, inActiveData }: ExportProps) => {
+const getExcelFile = ({ name, type, inActiveEntities }: ExportProps) => {
   let ws = {
     A1: { v: "#", s: HeaderColumnStyle },
     B1: { v: "NAME", s: HeaderColumnStyle },
@@ -21,7 +21,7 @@ const getExcelFile = ({ employee, type, inActiveData }: ExportProps) => {
     D1: { v: "TYPE OF ACTIVITY", s: HeaderColumnStyle },
     E1: { v: "SUBJECT", s: HeaderColumnStyle },
 
-    "!ref": `A1:E${inActiveData[type].length + 1}`,
+    "!ref": `A1:E${inActiveEntities.length + 1}`,
     "!cols": [
       { width: 10 },
       { width: 55 },
@@ -29,13 +29,10 @@ const getExcelFile = ({ employee, type, inActiveData }: ExportProps) => {
       { width: 20 },
       { width: 55 },
     ],
-    "!rows": [
-      { hpt: 30 },
-      ...Array(inActiveData[type].length).fill({ hpt: 20 }),
-    ],
+    "!rows": [{ hpt: 30 }, ...Array(inActiveEntities.length).fill({ hpt: 20 })],
   };
 
-  const structuredData = inActiveData[type].map(
+  const structuredData = inActiveEntities.map(
     ({ id, title, lastActivity }, index) => {
       const toReturn = [String(index + 1), [id, title]];
 
@@ -95,10 +92,9 @@ const getExcelFile = ({ employee, type, inActiveData }: ExportProps) => {
     ws = { ...ws, ...cell };
   }
 
-  const name = employee ? `_${employee.name}` : "";
-  const filename = `Inactive_${pluralMap[type]}${name}_${dayjs().format(
-    "YYYY-MM-DD-HHmmss"
-  )}.xlsx`;
+  const filename = `Inactive_${pluralMap[type]}${
+    name ? `_${name}` : ""
+  }_${dayjs().format("YYYY-MM-DD-HHmmss")}.xlsx`;
 
   const wb = {
     Props: {
@@ -113,4 +109,4 @@ const getExcelFile = ({ employee, type, inActiveData }: ExportProps) => {
   XLSX.writeFile(wb, filename);
 };
 
-export { getExcelFile };
+export default getExcelFile;

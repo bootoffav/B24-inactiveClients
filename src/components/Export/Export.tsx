@@ -1,10 +1,10 @@
-import type { Employee, InActiveData } from "../../types";
-import { getExcelFile } from "./ExcelGeneration";
+import type { Employee, InActiveData, Entity } from "../../types";
+import getExcelFile from "./ExcelGeneration";
 
 export interface ExportProps {
-  inActiveData: InActiveData;
+  inActiveEntities: Entity[];
   type: keyof InActiveData;
-  employee?: Employee;
+  name: string;
 }
 
 const Export = (props: ExportProps) => (

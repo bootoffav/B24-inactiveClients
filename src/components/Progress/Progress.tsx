@@ -8,7 +8,6 @@ type ProgressProps = {
 };
 
 const Progress = ({ current, total, type }: ProgressProps) => {
-  // debugger;
   return (
     <div className="block columns">
       <div className="column is-one-third">
