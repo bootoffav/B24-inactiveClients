@@ -4,7 +4,7 @@ import { isManager } from "../helpers";
 import type {
   departId,
   Employee,
-  ProcessingProps,
+  ProcessProps,
   CorporateEmail,
   CompanyStatusType,
   InActiveData,
@@ -17,7 +17,7 @@ import GetButton from "./SubmitButtons/GetButton/GetButton";
 import SendToEmailButton from "./SubmitButtons/SendToEmailButton/SendToEmailButton";
 
 type FormProps = {
-  process: (props: ProcessingProps) => Promise<void>;
+  process: (props: ProcessProps) => Promise<void>;
   isLoading: boolean;
   abort: () => void;
 };

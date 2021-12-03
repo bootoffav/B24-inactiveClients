@@ -1,5 +1,5 @@
 import { useReducer, useState } from "react";
-import Form, { FormProps } from "./components/Form";
+import Form from "./components/Form";
 import Progress from "./components/Progress/Progress";
 import SentEmail from "./components/SentEmail";
 import Abort from "./components/Abort";
@@ -11,6 +11,7 @@ import {
   Employee,
   ProgressTuple,
   CorporateEmail,
+  ProcessProps,
 } from "./types";
 import processing from "./processing";
 import {
@@ -48,13 +49,13 @@ function App() {
     return <LoadingUserData />;
   }
 
-  const process: FormProps["process"] = async ({
+  const process = async ({
     employee,
     inactivityPeriod,
     companyStatuses,
     entityToCheck,
     destination,
-  }) => {
+  }: ProcessProps) => {
     if (destination === "mail") {
       setEmailWhereToBeSent(user?.email ?? "");
       setAppState("emailed");
@@ -68,7 +69,6 @@ function App() {
       inactivityPeriod,
       companyStatuses,
       entityToCheck,
-      destination,
     })) {
       if (window.aborted) return Promise.resolve(void (window.aborted = false));
 

@@ -2,6 +2,7 @@
   "name": "inactive_clients",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@auth0/auth0-react": "^1.8.0",
     "@creativebulma/bulma-badge": "^1.0.1",

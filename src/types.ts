@@ -20,6 +20,9 @@ export interface ProcessingProps {
   readonly inactivityPeriod: string;
   readonly companyStatuses?: CompanyStatusType[];
   readonly entityToCheck: keyof InActiveData;
+}
+
+export interface ProcessProps extends ProcessingProps {
   readonly destination: "web" | "mail";
 }
 
