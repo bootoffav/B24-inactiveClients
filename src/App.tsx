@@ -21,7 +21,7 @@ import {
   initInactiveState,
 } from "./reducers";
 import { useAuth0 } from "@auth0/auth0-react";
-// import { stringify } from "qs";
+import { stringify } from "qs";
 import LoadingUserData from "./components/LoadingUserData";
 import Export from "./components/Export/Export";
 import { isManager } from "./helpers";
@@ -56,7 +56,19 @@ function App() {
     destination,
   }: ProcessProps) => {
     if (destination === "mail") {
-      setAppState("emailed");
+      fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
+        mode: "no-cors", // todo
+        method: "post",
+        body: stringify({
+          inactivityPeriod,
+          id: employee.id,
+          email: user?.email,
+          entityToCheck,
+        }),
+      }).then(() => {
+        setAppState("emailed");
+        setTimeout(() => setAppState("initial"), 8000);
+      });
       return;
     }
     setAppState("started");
@@ -152,16 +164,3 @@ function App() {
 }
 
 export default App;
-
-// fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
-//   mode: "no-cors", // todo
-//   method: "post",
-//   body: stringify({
-//     inactivityPeriod,
-//     id: employee.id,
-//     email: employee.email,
-//   }),
-// }).then(() => {
-//   setEmailWhereToBeSent(employee.email);
-//   setAppState("emailed");
-// });

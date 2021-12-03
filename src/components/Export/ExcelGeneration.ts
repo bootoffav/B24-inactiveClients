@@ -106,7 +106,7 @@ const getExcelFile = ({ name, type, inActiveEntities }: ExportProps) => {
     SheetNames: [`${pluralMap[type]}`],
     Sheets: { [`${pluralMap[type]}`]: ws },
   };
-  XLSX.writeFile(wb, filename);
+  return XLSX.writeFile(wb, filename);
 };
 
 export default getExcelFile;

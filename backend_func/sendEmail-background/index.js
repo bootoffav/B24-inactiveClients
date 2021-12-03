@@ -1,10 +1,10 @@
 import { parse } from "qs";
 import processing from "../../src/processing";
 import sendEmail from "./sendEmail";
-import { getExcelFile } from "../../src/components/Export/ExcelGeneration";
+import getExcelFile from "../../src/components/Export/ExcelGeneration";
 
 const handler = async function (event, context) {
-  const { inactivityPeriod, id, email } = parse(event.body);
+  const { inactivityPeriod, id, email, entityToCheck } = parse(event.body);
   let inActiveEntities = [];
 
   for await (const [_, payload] of processing({
@@ -12,7 +12,7 @@ const handler = async function (event, context) {
       id,
     },
     inactivityPeriod,
-    entityToCheck: "company",
+    entityToCheck,
   })) {
     if (typeof payload[0] !== "number" && typeof payload[1] !== "number") {
       inActiveEntities = [...inActiveEntities, payload];
@@ -23,7 +23,12 @@ const handler = async function (event, context) {
   }
 
   // console.log(inActiveEntities);
-  // getExcelFile({ })
+  const buffer = getExcelFile({
+    inActiveEntities,
+    name: "Stub",
+    type: entityToCheck,
+  });
+
   return {
     statusCode: 202,
   };
