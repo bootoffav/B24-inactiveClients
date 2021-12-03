@@ -138,7 +138,10 @@ function App() {
                   employee={employee}
                 />
               )}
-              <Result inActiveData={inActiveData} type={entityToCheck} />
+              <Result
+                inActiveEntities={inActiveData[entityToCheck]}
+                type={entityToCheck}
+              />
             </>
           )}
           {appState === "emailed" && <SentEmail email={emailWhereToBeSent} />}
