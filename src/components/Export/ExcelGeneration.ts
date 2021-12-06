@@ -1,6 +1,5 @@
 import { ExportProps } from "./Export";
 import { pluralMap } from "../../helpers";
-import XLSX from "xlsx-js-style";
 import dayjs from "dayjs";
 
 const HeaderColumnStyle = {
@@ -13,7 +12,11 @@ const HeaderColumnStyle = {
   },
 };
 
-const getExcelFile = ({ name, type, inActiveEntities }: ExportProps) => {
+const generateExcelFileStructure = ({
+  name,
+  type,
+  inActiveEntities,
+}: ExportProps) => {
   let ws = {
     A1: { v: "#", s: HeaderColumnStyle },
     B1: { v: "NAME", s: HeaderColumnStyle },
@@ -106,7 +109,11 @@ const getExcelFile = ({ name, type, inActiveEntities }: ExportProps) => {
     SheetNames: [`${pluralMap[type]}`],
     Sheets: { [`${pluralMap[type]}`]: ws },
   };
-  return XLSX.writeFile(wb, filename);
+
+  return {
+    filename,
+    content: wb,
+  };
 };
 
-export default getExcelFile;
+export default generateExcelFileStructure;

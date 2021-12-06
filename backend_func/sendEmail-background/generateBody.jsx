@@ -1,8 +1,8 @@
-import Result from "../../../src/components/Result/Result";
-import React from "react";
 import ReactDOMServer from "react-dom/server";
+import Result from "../../src/components/Result/Result.tsx";
+import React from "react";
 
-const generateHtml = (data) => {
+const generateBody = (data, type) => {
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -10,9 +10,12 @@ const generateHtml = (data) => {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-badge@1.0.1/dist/bulma-badge.min.css"></link>
     </head>
     <body>
-    bla bla
+    <div class="container">
+      ${ReactDOMServer.renderToString(
+        <Result inActiveEntities={data} type={type} />
+      )}
+    </div>
     </body></html>`;
 };
-// ${ReactDOMServer.renderToString(<Result inActiveData={data}></Result>)}
 
-export default generateHtml;
+export default generateBody;

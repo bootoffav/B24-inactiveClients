@@ -1,5 +1,6 @@
-import type { Employee, InActiveData, Entity } from "../../types";
-import getExcelFile from "./ExcelGeneration";
+import type { InActiveData, Entity } from "../../types";
+import excelFile from "./ExcelGeneration";
+import XLSX from "xlsx-js-style";
 
 export interface ExportProps {
   inActiveEntities: Entity[];
@@ -11,7 +12,10 @@ const Export = (props: ExportProps) => (
   <section>
     <button
       className="button is-small is-pulled-right is-info is-light"
-      onClick={() => getExcelFile(props)}
+      onClick={() => {
+        const { filename, content } = excelFile(props);
+        XLSX.writeFile(content, filename);
+      }}
     >
       <span className="icon is-small">
         <i className="fas fa-file-download"></i>
