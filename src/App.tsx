@@ -48,7 +48,7 @@ function App() {
     return <LoadingUserData />;
   }
 
-  const process = async ({
+  const analize = async ({
     employee,
     inactivityPeriod,
     companyStatuses,
@@ -56,8 +56,7 @@ function App() {
     destination,
   }: ProcessProps) => {
     if (destination === "mail") {
-      fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
-        mode: "no-cors", // todo
+      fetch(`.netlify/functions/sendEmail-background`, {
         method: "post",
         body: stringify({
           inactivityPeriod,
@@ -115,7 +114,7 @@ function App() {
             </button>
           </div>
           <Form
-            process={process}
+            process={analize}
             isLoading={appState === "started"}
             abort={() => {
               setAppState("aborted");
