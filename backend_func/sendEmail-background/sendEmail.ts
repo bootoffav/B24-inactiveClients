@@ -21,7 +21,6 @@ export default async function sendEmail(
     },
   });
 
-  console.log("going to send email");
   const info = await transporter
     .sendMail({
       from: "Inactive clients report <mail@xmtextiles.com>",
@@ -37,7 +36,6 @@ export default async function sendEmail(
         },
       ],
     })
-    .catch((e) => console.log(e))
-    .finally(() => console.log("done sending email"));
+    .catch((e) => console.log(e));
   console.log(info);
 }

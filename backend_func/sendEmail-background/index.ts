@@ -23,8 +23,6 @@ const handler = async function (event) {
   })) {
     if (typeof payload[0] !== "number" && typeof payload[1] !== "number") {
       inActiveEntities = [...inActiveEntities, ...payload];
-    } else {
-      console.log(payload);
     }
   }
 
