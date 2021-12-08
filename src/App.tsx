@@ -58,6 +58,7 @@ function App() {
     if (destination === "mail") {
       fetch(`.netlify/functions/sendEmail-background`, {
         method: "post",
+        mode: "no-cors",
         body: stringify({
           inactivityPeriod,
           employee,
