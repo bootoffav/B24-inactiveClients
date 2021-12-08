@@ -12,7 +12,7 @@ const generateBody = (data, type) => {
     <body>
     <div class="container">
       ${ReactDOMServer.renderToString(
-        <Result inActiveEntities={data} type={type} />
+        <Result inActiveEntities={data} type={type} noPagination={true} />
       )}
     </div>
     </body></html>`;

@@ -3,10 +3,7 @@ import React from "react";
 import { useMemo } from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
 import dayjs from "dayjs";
-// import EmptyResult from "./EmptyResult";
-
 import { pluralMap } from "../../helpers";
-// import { InActiveData } from "../../types";
 
 type EmptyTabProps = {
   type: keyof InActiveData;
@@ -23,9 +20,10 @@ const EmptyResult = ({ type }: EmptyTabProps) => {
 type ResultProps = {
   type: keyof InActiveData;
   inActiveEntities: Entity[];
+  noPagination?: boolean;
 };
 
-function Result({ type, inActiveEntities }: ResultProps) {
+function Result({ type, inActiveEntities, noPagination = false }: ResultProps) {
   const columns = useMemo(
     () => [
       {
@@ -72,6 +70,7 @@ function Result({ type, inActiveEntities }: ResultProps) {
       // @ts-expect-error
       columns,
       data,
+      manualPagination: noPagination,
       initialState: {
         pageSize,
         sortBy: [
