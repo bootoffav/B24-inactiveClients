@@ -21,7 +21,7 @@ export default async function sendEmail(
     },
   });
 
-  transporter.sendMail({
+  const info = await transporter.sendMail({
     from: "Inactive clients report <mail@xmtextiles.com>",
     to: email,
     subject: `Inactive ${pluralMap[type]} of ${name}`,
@@ -35,4 +35,5 @@ export default async function sendEmail(
       },
     ],
   });
+  console.log(info);
 }
