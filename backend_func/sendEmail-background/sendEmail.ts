@@ -22,19 +22,22 @@ export default async function sendEmail(
   });
 
   console.log("going to send email");
-  const info = await transporter.sendMail({
-    from: "Inactive clients report <mail@xmtextiles.com>",
-    to: email,
-    subject: `Inactive ${pluralMap[type]} of ${name}`,
-    html,
-    attachments: [
-      {
-        filename,
-        content: XLSX.write(content, {
-          type: "buffer",
-        }),
-      },
-    ],
-  });
+  const info = await transporter
+    .sendMail({
+      from: "Inactive clients report <mail@xmtextiles.com>",
+      to: email,
+      subject: `Inactive ${pluralMap[type]} of ${name}`,
+      html,
+      attachments: [
+        {
+          filename,
+          content: XLSX.write(content, {
+            type: "buffer",
+          }),
+        },
+      ],
+    })
+    .catch((e) => console.log(e))
+    .finally(() => console.log("done sending email"));
   console.log(info);
 }

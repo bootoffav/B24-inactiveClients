@@ -35,7 +35,7 @@ const handler = async function (event) {
   });
 
   const html = generateBody(inActiveEntities, entityToCheck);
-  sendEmail(excelFile, html, email, entityToCheck, employee.name);
+  await sendEmail(excelFile, html, email, entityToCheck, employee.name);
   return {
     statusCode: 202,
   };
