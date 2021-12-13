@@ -144,10 +144,10 @@ function Form({ process, isLoading, abort }: FormProps) {
             entityToCheck={entityToCheck}
           />
         </div>
-        <div className="column is-2 is-flex is-align-items-end">
+        <div className="column is-2 is-flex is-align-self-flex-end">
           <GetButton abort={abort} started={started} setStarted={setStarted} />
         </div>
-        <div className="column is-2 is-flex is-align-items-end">
+        <div className="column is-2 is-flex is-align-self-flex-end">
           <SendToEmailButton />
         </div>
       </div>
