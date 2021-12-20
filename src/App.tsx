@@ -3,6 +3,7 @@ import Form from "./components/Form";
 import Progress from "./components/Progress/Progress";
 import SentEmail from "./components/SentEmail";
 import Abort from "./components/Abort";
+import UserMenu from "./components/UserMenu/UserMenu";
 import Result from "./components/Result/Result";
 import {
   AppState,
@@ -41,8 +42,7 @@ function App() {
     initProgressState
   );
 
-  const { loginWithRedirect, isAuthenticated, isLoading, logout, user } =
-    useAuth0();
+  const { loginWithRedirect, isAuthenticated, isLoading, user } = useAuth0();
 
   if (isLoading) {
     return <LoadingUserData />;
@@ -56,7 +56,7 @@ function App() {
     destination,
   }: ProcessProps) => {
     if (destination === "mail") {
-      fetch(`.netlify/functions/sendEmail-background`, {
+      fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
         method: "post",
         mode: "no-cors",
         body: stringify({
@@ -107,12 +107,7 @@ function App() {
               APP shows inactive clients in Bitrix24 CRM within specified period
               of time
             </div>
-            <button
-              className="column is-1 button is-ghost"
-              onClick={() => logout({ returnTo: window.location.origin })}
-            >
-              Log Out
-            </button>
+            <UserMenu />
           </div>
           <Form
             process={analize}
