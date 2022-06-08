@@ -23,7 +23,7 @@ export interface ProcessingProps {
 }
 
 export interface ProcessProps extends ProcessingProps {
-  readonly destination: "web" | "mail";
+  readonly destination: "web"; // | "mail";
 }
 
 export type CorporateEmail = `${string}@xmtextiles.${"com" | "eu"}`;

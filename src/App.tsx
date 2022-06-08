@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react";
 import Form from "./components/Form";
 import Progress from "./components/Progress/Progress";
-import SentEmail from "./components/SentEmail";
+// import SentEmail from "./components/SentEmail";
 import Abort from "./components/Abort";
 import UserMenu from "./components/UserMenu/UserMenu";
 import Result from "./components/Result/Result";
@@ -22,7 +22,7 @@ import {
   initInactiveState,
 } from "./reducers";
 import { useAuth0 } from "@auth0/auth0-react";
-import { stringify } from "qs";
+// import { stringify } from "qs";
 import LoadingUserData from "./components/LoadingUserData";
 import Export from "./components/Export/Export";
 import { isManager } from "./helpers";
@@ -55,22 +55,22 @@ function App() {
     entityToCheck,
     destination,
   }: ProcessProps) => {
-    if (destination === "mail") {
-      fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
-        method: "post",
-        mode: "no-cors",
-        body: stringify({
-          inactivityPeriod,
-          employee,
-          email: user?.email,
-          entityToCheck,
-        }),
-      }).then(() => {
-        setAppState("emailed");
-        setTimeout(() => setAppState("initial"), 8000);
-      });
-      return;
-    }
+    // if (destination === "mail") {
+    //   fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
+    //     method: "post",
+    //     mode: "no-cors",
+    //     body: stringify({
+    //       inactivityPeriod,
+    //       employee,
+    //       email: user?.email,
+    //       entityToCheck,
+    //     }),
+    //   }).then(() => {
+    //     setAppState("emailed");
+    //     setTimeout(() => setAppState("initial"), 8000);
+    //   });
+    //   return;
+    // }
     setAppState("started");
     setEntityToCheck(entityToCheck);
     setEmployee(employee);
@@ -148,7 +148,7 @@ function App() {
               />
             </>
           )}
-          {appState === "emailed" && <SentEmail />}
+          {/* {appState === "emailed" && <SentEmail />} */}
           {appState === "aborted" && <Abort />}
         </section>
       </div>

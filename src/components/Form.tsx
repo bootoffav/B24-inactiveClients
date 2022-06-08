@@ -14,7 +14,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { CompanyStatus } from "./CompanyStatus/CompanyStatus";
 import EntityChecking from "./EntityChecking/EntityChecking";
 import GetButton from "./SubmitButtons/GetButton/GetButton";
-import SendToEmailButton from "./SubmitButtons/SendToEmailButton/SendToEmailButton";
+// import SendToEmailButton from "./SubmitButtons/SendToEmailButton/SendToEmailButton";
 
 type FormProps = {
   process: (props: ProcessProps) => Promise<void>;
@@ -48,9 +48,10 @@ function Form({ process, isLoading, abort }: FormProps) {
         event.preventDefault();
         setStarted(true);
         const destination =
-          ((event.nativeEvent as SubmitEvent).submitter?.dataset.destination as
-            | "web"
-            | "mail") ?? "web";
+          ((event.nativeEvent as SubmitEvent).submitter?.dataset
+            .destination as "web") ??
+          // | "mail"
+          "web";
         if (employee) {
           process({
             employee,
@@ -144,12 +145,12 @@ function Form({ process, isLoading, abort }: FormProps) {
             entityToCheck={entityToCheck}
           />
         </div>
-        <div className="column is-2 is-flex is-align-self-flex-end">
+        <div className="column is-flex is-align-self-flex-end">
           <GetButton abort={abort} started={started} setStarted={setStarted} />
         </div>
-        <div className="column is-2 is-flex is-align-self-flex-end">
+        {/* <div className="column is-2 is-flex is-align-self-flex-end">
           <SendToEmailButton />
-        </div>
+        </div> */}
       </div>
     </form>
   );
