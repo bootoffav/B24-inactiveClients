@@ -25,7 +25,7 @@ export type Department = { name: string; id: string };
  * @returns array of department names and their respective ids
  */
 async function getDepartments(
-  ids = [8640, 113, 8596, 8560, 8618, 8520, 8496, 8622, 8470, 8638, 8625]
+  ids = [8640, 113, 8596, 8560, 8618, 8520, 8496, 8622, 8470, 8638, 8625, 8421]
 ): Promise<Department[]> {
   let departments: Department[] = [];
 
