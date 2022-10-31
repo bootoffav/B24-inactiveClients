@@ -24,6 +24,7 @@ const delay = async (ms = process.env.REACT_APP_DELAY || 700) =>
   await new Promise((res) => setTimeout(res, Number(ms)));
 
 function getLastDayOfActivePeriod(amount: string, unit: string) {
+  // @ts-expect-error
   return today.subtract(Number(amount), unit);
 }
 
