@@ -1785,10 +1785,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-free@npm:^5.15.4":
-  version: 5.15.4
-  resolution: "@fortawesome/fontawesome-free@npm:5.15.4"
-  checksum: 32281c3df4075290d9a96dfc22f72fadb3da7055d4117e48d34046b8c98032a55fa260ae351b0af5d6f6fb57a2f5d79a4abe52af456da35195f7cb7dda27b4a2
+"@fortawesome/fontawesome-free@npm:^6.4.2":
+  version: 6.4.2
+  resolution: "@fortawesome/fontawesome-free@npm:6.4.2"
+  checksum: 14be8fbb8faa62473c01fe70590e39cdc76a0083b791537fd3d2215a790d2722d917242b1f7948e160876934a8d3823c764af9b8d4ef6dc1ecad55b585e5b776
   languageName: node
   linkType: hard
 
@@ -8716,7 +8716,7 @@ __metadata:
     "@auth0/auth0-react": ^2.2.1
     "@creativebulma/bulma-badge": ^1.0.1
     "@creativebulma/bulma-tooltip": ^1.2.0
-    "@fortawesome/fontawesome-free": ^5.15.4
+    "@fortawesome/fontawesome-free": ^6.4.2
     "@netlify/functions": ^2.3.0
     "@testing-library/jest-dom": ^5.17.0
     "@testing-library/react": ^11.2.7
@@ -8740,7 +8740,7 @@ __metadata:
     react-scripts: 4.0.3
     react-table: ^7.8.0
     typescript: ^4.9.5
-    web-vitals: ^1.1.2
+    web-vitals: ^3.5.0
     xlsx: ^0.18.5
     xlsx-js-style: ^1.2.0
   languageName: unknown
@@ -16466,10 +16466,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web-vitals@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "web-vitals@npm:1.1.2"
-  checksum: 92071029089277166e11141b735831d9011e85737d32c1360034676db898ab0ca95f19041ee01904f2189ad6e711b9da6b17567e4831290a429a586c98bc573f
+"web-vitals@npm:^3.5.0":
+  version: 3.5.0
+  resolution: "web-vitals@npm:3.5.0"
+  checksum: d8d760772a7ac33c9569f1d92619a0d2582ffe61bb667b0a2f9de9749ae861842b8a0d83c5126226afb792e63eb57bc461a0cb2e568dce03c81cf6b46677f442
   languageName: node
   linkType: hard
 
