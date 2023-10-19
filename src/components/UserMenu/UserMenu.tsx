@@ -24,7 +24,9 @@ function UserMenu() {
         <div className="dropdown-content">
           <button
             className="dropdown-item button is-ghost"
-            onClick={() => logout({ returnTo: window.location.origin })}
+            onClick={() =>
+              logout({ logoutParams: { returnTo: window.location.origin } })
+            }
           >
             Logout
           </button>
