@@ -26,8 +26,19 @@ export type Department = { name: string; id: string };
  */
 async function getDepartments(
   ids = [
-    8640, 113, 8596, 8560, 8618, 8978, 8520, 8496, 8622, 8470, 8638, 8625, 9014,
-    8421,
+    8980, // RO2 Sales
+    8640, // Sales Lithuania
+    8978, // Sales Poland
+    8421, // tech. accounts
+    113, // XM Textiles Brasil
+    8596, // XM Textiles HU,SK,CZ
+    8560, // XM Textiles Italy
+    8618, // XM Textiles Kazakhstan
+    8496, // XM Textiles Romania
+    8622, // XM Textiles Russia
+    8470, // XM Textiles Spain
+    8638, // XM Textiles Turkey
+    9014, // XM Textiles USA
   ]
 ): Promise<Department[]> {
   let departments: Department[] = [];
