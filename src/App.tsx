@@ -53,8 +53,8 @@ function App() {
     inactivityPeriod,
     companyStatuses,
     entityToCheck,
-    destination,
-  }: ProcessProps) => {
+  }: // destination,
+  ProcessProps) => {
     // if (destination === "mail") {
     //   fetch(`http://localhost:9999/.netlify/functions/sendEmail-background`, {
     //     method: "post",
@@ -154,7 +154,7 @@ function App() {
       </div>
     </main>
   ) : (
-    loginWithRedirect()
+    <>{loginWithRedirect()}</>
   );
 }
 

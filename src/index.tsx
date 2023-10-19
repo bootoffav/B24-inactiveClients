@@ -15,7 +15,6 @@ root.render(
         redirect_uri: window.location.origin,
       }}
     >
-      {/* @ts-expect-error */}
       <App />
     </Auth0Provider>
   </StrictMode>

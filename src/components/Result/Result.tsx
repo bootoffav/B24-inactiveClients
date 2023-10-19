@@ -92,7 +92,7 @@ function Result({ type, inActiveEntities, noPagination = false }: ResultProps) {
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column, i: number) => (
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render("Header")}
+                  <>{column.render("Header")}</>
                   <span>
                     {column.isSorted ? (
                       column.isSortedDesc ? (
