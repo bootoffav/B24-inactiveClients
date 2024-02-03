@@ -10,7 +10,7 @@ const GetButton = ({ abort, started, setStarted }: GetButtonProps) => {
       {!started && (
         <input
           type="submit"
-          className="button mr-1 is-fullwidth is-info"
+          className="button is-fullwidth is-info"
           value="Get"
           data-destination="web"
         />
