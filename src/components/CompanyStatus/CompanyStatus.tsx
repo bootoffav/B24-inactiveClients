@@ -53,6 +53,7 @@ function CompanyStatus({
       >
         <input
           type="checkbox"
+          id="checkByCompanyStatus"
           checked={checkboxState}
           onChange={() => setCheckboxState(!checkboxState)}
           disabled={entityToCheck !== "company"}

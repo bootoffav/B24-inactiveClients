@@ -20,12 +20,9 @@ const EntityChecking = (props: EntityCheckingProps) => {
   };
 
   return (
-    <label htmlFor="entityChecking">
+    <label>
       CRM entity type to check:
-      <div
-        className="field has-addons has-addons-fullwidth"
-        id="entityChecking"
-      >
+      <div className="field has-addons has-addons-fullwidth">
         {inActivityDataTypes.map((type) => (
           <p className="control" key={type}>
             <button
