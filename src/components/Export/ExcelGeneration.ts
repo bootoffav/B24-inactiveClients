@@ -1,6 +1,6 @@
 import { ExportProps } from "./Export";
 import { pluralMap } from "../../helpers";
-import dayjs from "dayjs";
+import { format } from "date-fns";
 
 const HeaderColumnStyle = {
   alignment: {
@@ -46,7 +46,7 @@ const generateExcelFileStructure = ({
           : "-";
 
         toReturn.push(
-          dayjs(LAST_UPDATED).format("YYYY-MM-DD"),
+          format(new Date(LAST_UPDATED), "yyyy-MM-dd"),
           activityType,
           SUBJECT
         );
@@ -97,7 +97,7 @@ const generateExcelFileStructure = ({
 
   const filename = `Inactive_${pluralMap[type]}${
     name ? `_${name}` : ""
-  }_${dayjs().format("YYYY-MM-DD-HHmmss")}.xlsx`;
+  }_${format(new Date(), "yyyy-MM-dd-HHmmss")}.xlsx`;
 
   const wb = {
     Props: {

@@ -1,5 +1,4 @@
 import type { InActiveData, Entity } from "../../types";
-import React from "react";
 import { useMemo } from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
 import dayjs from "dayjs";
