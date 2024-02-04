@@ -8,6 +8,7 @@ import type {
   CorporateEmail,
   CompanyStatusType,
   InActiveData,
+  InactivityPeriod,
 } from "../types";
 import { Department, getDepartments } from "../B24";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -27,7 +28,10 @@ function Form({ process, isLoading, abort }: FormProps) {
   const [employee, setEmployee] = useState<Employee>();
   const [entityToCheck, setEntityToCheck] =
     useState<keyof InActiveData>("company");
-  const [inactivityPeriod, setInactivityPeriod] = useState<string>("6 month");
+  const [inactivityPeriod, setInactivityPeriod] = useState<InactivityPeriod>([
+    6,
+    "months",
+  ]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [companyStatuses, setCompanyStatuses] = useState<CompanyStatusType[]>();
   const [started, setStarted] = useState(false);
@@ -118,15 +122,15 @@ function Form({ process, isLoading, abort }: FormProps) {
                 required
                 id="inactivePeriod"
                 onChange={({ target }: React.BaseSyntheticEvent) => {
-                  setInactivityPeriod(target.value);
+                  setInactivityPeriod(target.value.split(" "));
                 }}
-                defaultValue={inactivityPeriod}
+                defaultValue={`${inactivityPeriod[0]} ${inactivityPeriod[1]}`}
               >
                 <option></option>
-                <option value="1 month">last month</option>
-                <option value="3 month">last 3 months</option>
-                <option value="6 month">last 6 months</option>
-                <option value="1 year">1 year</option>
+                <option value="1 months">last month</option>
+                <option value="3 months">last 3 months</option>
+                <option value="6 months">last 6 months</option>
+                <option value="1 years">1 year</option>
               </select>
             </div>
           </label>

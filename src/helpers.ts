@@ -1,7 +1,10 @@
-import dayjs from "dayjs";
-import { Activity, InActiveData, CorporateEmail } from "./types";
-
-const today = dayjs();
+import {
+  Activity,
+  InActiveData,
+  CorporateEmail,
+  InactivityPeriod,
+} from "./types";
+import { isAfter, sub } from "date-fns";
 
 const isManager = (userEmail?: CorporateEmail): boolean => {
   const ManagerEmails = JSON.parse(process.env.REACT_APP_MANAGERS ?? "");
@@ -23,25 +26,17 @@ const pluralMap = {
 const delay = async (ms = process.env.REACT_APP_DELAY || 700) =>
   await new Promise((res) => setTimeout(res, Number(ms)));
 
-function getLastDayOfActivePeriod(amount: string, unit: string) {
-  // @ts-expect-error
-  return today.subtract(Number(amount), unit);
-}
-
 function isInActiveEntity(
-  activity: Activity,
-  inactivityPeriod: string
+  { LAST_UPDATED }: Activity,
+  inactivityPeriod: InactivityPeriod
 ): Boolean {
-  const [amount, unit] = inactivityPeriod.split(" ");
-  const lastPossibleDayForBeingActive = getLastDayOfActivePeriod(amount, unit);
-  return lastPossibleDayForBeingActive.isAfter(activity.LAST_UPDATED);
+  const [amount, unit] = inactivityPeriod;
+  return isAfter(
+    sub(new Date(), {
+      [unit]: +amount,
+    }), // last day to be active
+    LAST_UPDATED
+  );
 }
 
-export {
-  isInActiveEntity,
-  pluralMap,
-  inActivityDataTypes,
-  delay,
-  getLastDayOfActivePeriod,
-  isManager,
-};
+export { isInActiveEntity, pluralMap, inActivityDataTypes, delay, isManager };

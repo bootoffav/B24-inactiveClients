@@ -1,7 +1,7 @@
 import type { InActiveData, Entity } from "../../types";
 import { useMemo } from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
-import dayjs from "dayjs";
+import { format } from "date-fns";
 import { pluralMap } from "../../helpers";
 
 type EmptyTabProps = {
@@ -204,7 +204,7 @@ function cellView({ column, value, row }: any) {
     case "title":
       return printLink({ id: payload.id, text: value, type: payload.type });
     case "lastActivityDate":
-      return value ? dayjs(value).format("YYYY-MM-DD") : "-";
+      return value ? format(new Date(value), "yyyy-MM-dd") : "-";
     case "activityType":
       return (
         <span className="is-capitalized">

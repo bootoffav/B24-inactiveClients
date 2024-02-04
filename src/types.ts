@@ -17,7 +17,7 @@ export type AppState =
 
 export interface ProcessingProps {
   readonly employee: Employee;
-  readonly inactivityPeriod: string;
+  readonly inactivityPeriod: InactivityPeriod;
   readonly companyStatuses?: CompanyStatusType[];
   readonly entityToCheck: keyof InActiveData;
 }
@@ -26,6 +26,7 @@ export interface ProcessProps extends ProcessingProps {
   readonly destination: "web"; // | "mail";
 }
 
+export type InactivityPeriod = [number, "months" | "years"];
 export type CorporateEmail = `${string}@xmtextiles.${"com" | "eu"}`;
 export type Output = "screen" | "email";
 
